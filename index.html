@@ -7,77 +7,136 @@
 <title>Encaixe Galeria</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Instrument+Sans:wght@400;500;600&display=swap">
+<meta name="theme-color" content="#C8A271">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 30 30%27%3E%3Crect width=%2730%27 height=%2730%27 rx=%276%27 fill=%27%23C8A271%27/%3E%3Cpath d=%27M24 6H7v18h17M7 15h17%27 fill=%27none%27 stroke=%27%231B1A17%27 stroke-width=%273.4%27/%3E%3C/svg%3E">
 <style>
-/* Layout: coluna de celular; a "tampa" kraft no topo e o tênis escolhido aparece na janela da caixa */
+/* Layout: a "tampa" kraft no topo; a caixa do hero troca de tênis e de faixa conforme a coleção escolhida.
+   No celular é uma coluna; a partir de 900px o hero vira duas colunas e os looks ficam lado a lado. */
 :root{
   --kraft:#C8A271; --kraft-2:#E6D3B5; --kraft-d:#9C7A4C; --paper:#F7F1E7; --ink:#1B1A17; --muted:#6B6258;
   --cobalt:#2338C9; --line:#D9C9AE; --card:#FFFDF9; --window:#2A231B;
+  --accent:#C9F24B;
   --display:"Unbounded", "Arial Black", system-ui, sans-serif;
   --body:"Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ease:cubic-bezier(.2,.7,.2,1);
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --kraft:#B48D5C; --kraft-2:#3A2F22; --kraft-d:#8A6A40; --paper:#17150F; --ink:#F2EADC; --muted:#B4A792;
+  --kraft:#B48D5C; --kraft-2:#2A2419; --kraft-d:#8A6A40; --paper:#17150F; --ink:#F2EADC; --muted:#B4A792;
   --cobalt:#8D9CFF; --line:#3B3427; --card:#201D16; --window:#0F0D0A; color-scheme:dark }}
 :root[data-theme="dark"]{
-  --kraft:#B48D5C; --kraft-2:#3A2F22; --kraft-d:#8A6A40; --paper:#17150F; --ink:#F2EADC; --muted:#B4A792;
+  --kraft:#B48D5C; --kraft-2:#2A2419; --kraft-d:#8A6A40; --paper:#17150F; --ink:#F2EADC; --muted:#B4A792;
   --cobalt:#8D9CFF; --line:#3B3427; --card:#201D16; --window:#0F0D0A; color-scheme:dark }
 *{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
 .wrap{max-width:560px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left,0px));padding-right:max(16px, env(safe-area-inset-right,0px))}
-header.lid{background:var(--kraft);color:#1B1A17;padding-block:22px 28px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:8px;z-index:10}
+.skip:focus{left:16px}
+
+/* Tampa (hero) */
+header.lid{background:var(--kraft);color:#1B1A17;padding-block:20px 32px}
 .brandrow{display:flex;align-items:center;gap:10px;justify-content:space-between}
 .logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;letter-spacing:.04em;font-size:20px}
-.collab{font-size:12px;text-transform:uppercase;letter-spacing:.14em;font-weight:600}
-h1{font-family:var(--display);font-weight:700;font-size:clamp(25px,6.6vw,33px);line-height:1.12;margin:20px 0 8px;text-wrap:balance}
-.lid p{margin:0;max-width:40ch}
-.box{margin-top:22px;background:#B8925F;border-radius:6px;padding:14px 14px 0;position:relative}
-.box .win{background:var(--window);border-radius:10px 10px 0 0;padding:14px 18px 0;display:flex;justify-content:center}
-.box .win svg{width:100%;max-width:400px;height:auto;display:block}
-.box .front{background:#C8A271;margin:0 -14px;padding:10px 14px 12px;display:flex;justify-content:space-between;align-items:center;border-top:2px solid #9C7A4C;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#1B1A17}
-.box .hole{width:18px;height:18px;border-radius:50%;background:#2A231B}
-section{padding-block:28px 8px}
-h2{font-family:var(--display);font-weight:700;font-size:18px;margin:0 0 4px}
-.sub{color:var(--muted);margin:0 0 16px;font-size:15px}
-.label{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);font-weight:600}
-.pairs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.pair{border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:10px 6px 8px;cursor:pointer;text-align:center;color:var(--ink);font:inherit;display:grid;gap:2px}
-.pair svg{width:100%;height:auto;display:block}
-.pair b{font-size:13px}.pair small{font-size:11px;color:var(--muted)}
-.pair[aria-pressed="true"]{border-color:var(--cobalt);box-shadow:0 0 0 2px var(--cobalt) inset}
-.pair:focus-visible,.chip:focus-visible,.save:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
-.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin:18px 0 6px}
-.chip{flex:none;border:1.5px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;font-weight:500;cursor:pointer;min-height:40px}
-.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.looks{display:grid;gap:14px;margin-top:10px}
-.look{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:12px}
-.lookhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-.look h3{font-family:var(--display);font-weight:500;font-size:16px;margin:2px 0 0}
-.save{border:1.5px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;min-width:44px;min-height:44px;font-size:13px;font-weight:600;cursor:pointer;padding:0 10px}
-.save[aria-pressed="true"]{background:var(--cobalt);border-color:var(--cobalt);color:#fff}
-.palette{display:flex;height:14px;border-radius:4px;overflow:hidden}
-.palette i{flex:1}
-ul.pieces{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-ul.pieces li{display:flex;align-items:center;gap:10px;font-size:15px}
-ul.pieces b{width:14px;height:14px;border-radius:50%;flex:none;border:1px solid rgba(0,0,0,.18)}
-.tip{font-size:14px;color:var(--muted);border-top:1px dashed var(--line);padding-top:10px;margin:0}
-.steps{display:grid;gap:12px;counter-reset:s}
-.step{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:start}
-.step::before{counter-increment:s;content:counter(s);font-family:var(--display);font-weight:700;width:44px;height:44px;border-radius:8px;background:var(--kraft);color:#1B1A17;display:grid;place-items:center}
-.step p{margin:0}.step strong{display:block}
-.care{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.care div{background:var(--kraft-2);border-radius:10px;padding:12px;font-size:14px}
-.care strong{display:block;font-size:13px;margin-bottom:2px}
-footer{padding-block:28px 40px;color:var(--muted);font-size:13px}
-.count{font-variant-numeric:tabular-nums}
-@media (max-width:380px){.care{grid-template-columns:1fr}}
-@media (prefers-reduced-motion:no-preference){.look{animation:in .25s ease both}@keyframes in{from{transform:translateY(6px)}to{transform:none}}}
-</style>
-</head>
-<body>
+.collab{font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.02em}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(26px,6.6vw,40px);line-height:1.1;margin:24px 0 10px;text-wrap:balance}
+.lid p{margin:0;max-width:38ch;font-size:17px}
+.herocta{display:inline-flex;align-items:center;min-height:44px;margin-top:18px;padding:0 18px;border-radius:10px;background:#1B1A17;color:#F7F1E7;font-weight:600;text-decoration:none}
+.herocta:focus-visible{outline:3px solid var(--cobalt);outline-offset:3px}
 
+/* A caixa: o elemento marcante da página. A faixa e o selo mudam com a coleção. */
+.box{margin-top:24px;background:#B8925F;border-radius:8px;padding:14px 14px 0;position:relative;box-shadow:0 18px 30px -18px rgba(40,25,5,.55)}
+.box::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;border-radius:8px 8px 0 0;background:var(--accent);transition:background-color .25s var(--ease)}
+.seal{position:absolute;top:-2px;right:28px;width:22px;height:30px;background:#2338C9;border-radius:0 0 4px 4px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.18)}
+.box .win{background:var(--window);border-radius:8px 8px 0 0;padding:16px 18px 0;display:flex;justify-content:center;overflow:hidden}
+.box .win svg{width:100%;max-width:400px;height:auto;display:block}
+.box .front{background:#C8A271;margin:0 -14px;padding:10px 14px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:2px solid #9C7A4C;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#1B1A17;border-radius:0 0 8px 8px}
+.box .front span:first-child{white-space:nowrap}
+@media (max-width:420px){.box .front{letter-spacing:.06em;font-size:11px}}
+.box .hole{width:18px;height:18px;border-radius:50%;background:#2A231B}
+
+/* Conteúdo */
+section{padding-block:36px 8px}
+h2{font-family:var(--display);font-weight:700;font-size:20px;line-height:1.25;margin:0 0 6px}
+.sub{color:var(--muted);margin:0 0 18px;font-size:15px;max-width:60ch}
+
+.pairs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pair{position:relative;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:10px 6px 10px;cursor:pointer;text-align:center;color:var(--ink);font:inherit;display:grid;gap:2px;transition:border-color .15s var(--ease),transform .1s var(--ease)}
+.pair svg{width:100%;height:auto;display:block}
+.pair b{font-size:14px}.pair small{font-size:12px;color:var(--muted)}
+.pair::after{content:"";position:absolute;left:12px;right:12px;bottom:-1.5px;height:4px;border-radius:4px 4px 0 0;background:var(--sw);opacity:0;transition:opacity .15s}
+.pair[aria-pressed="true"]{border-color:var(--ink)}
+.pair[aria-pressed="true"]::after{opacity:1}
+.pair:active,.chip:active,.save:active{transform:scale(.97)}
+.pair:focus-visible,.chip:focus-visible,.save:focus-visible,.linkbtn:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 8px}
+.chip{border:1.5px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:8px 16px;font:inherit;font-size:14px;font-weight:500;cursor:pointer;min-height:44px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip.saved{border-style:dashed}
+.chip.saved[aria-pressed="true"]{border-style:solid}
+.count{font-variant-numeric:tabular-nums;color:var(--muted);font-size:15px;margin:4px 0 0}
+
+.looks{display:grid;gap:14px;margin-top:14px}
+.look{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:14px;align-content:start}
+.lookhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.occ{font-size:13px;color:var(--muted)}
+.look h3{font-family:var(--display);font-weight:500;font-size:17px;line-height:1.3;margin:2px 0 0}
+.save{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:transparent;color:var(--ink);border-radius:10px;min-width:44px;min-height:44px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:0 12px;flex:none}
+.save svg{width:16px;height:16px}
+.save[aria-pressed="true"]{background:var(--cobalt);border-color:var(--cobalt);color:#fff}
+:root[data-theme="dark"] .save[aria-pressed="true"]{color:#14152E}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .save[aria-pressed="true"]{color:#14152E}}
+.palette{display:flex;height:28px;border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.palette i{flex:1}
+.palette i.shoe{flex:1.4;position:relative}
+ul.pieces{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+ul.pieces li{display:flex;align-items:center;gap:10px;font-size:15px}
+ul.pieces b{width:16px;height:16px;border-radius:50%;flex:none;border:1px solid color-mix(in srgb, var(--ink) 28%, transparent)}
+ul.pieces li.shoe{color:var(--muted)}
+.tip{font-size:14px;margin:0;padding:10px 12px;border-radius:8px;background:var(--kraft-2)}
+.tip strong{font-weight:600}
+.empty{border:1.5px dashed var(--line);border-radius:14px;padding:24px 16px;text-align:center;color:var(--muted)}
+.empty p{margin:0 0 12px}
+.linkbtn{border:0;background:var(--ink);color:var(--paper);border-radius:10px;min-height:44px;padding:0 16px;font:inherit;font-weight:600;cursor:pointer}
+
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:16px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start;counter-increment:s}
+.steps li::before{content:counter(s);font-family:var(--display);font-weight:700;width:44px;height:44px;border-radius:10px;background:var(--kraft);color:#1B1A17;display:grid;place-items:center}
+.steps p{margin:0}.steps strong{display:block}
+
+.care{margin:0;display:grid}
+.care div{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line);font-size:15px}
+.care div:last-child{border-bottom:1px solid var(--line)}
+.care dt{font-weight:600}.care dd{margin:0;color:var(--muted)}
+
+footer{padding-block:36px 48px;color:var(--muted);font-size:13px;max-width:70ch}
+
+.toast{position:fixed;left:50%;bottom:max(20px, env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;background:var(--ink);color:var(--paper);padding:12px 18px;border-radius:12px;font-size:15px;font-weight:500;pointer-events:none;transition:opacity .2s var(--ease),transform .2s var(--ease);box-shadow:0 10px 24px -10px rgba(0,0,0,.45)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:380px){.care div{grid-template-columns:1fr;gap:2px}}
+@media (min-width:900px){
+  .wrap{max-width:1080px;padding-left:32px;padding-right:32px}
+  header.lid{padding-block:28px 56px}
+  .hero{display:grid;grid-template-columns:1fr 1.05fr;column-gap:56px;align-items:center}
+  .hero .brandrow{grid-column:1 / -1}
+  .hero .box{margin-top:32px}
+  .pairs{max-width:620px}
+  .looks{grid-template-columns:1fr 1fr}
+  .more{display:grid;grid-template-columns:1.1fr 1fr;column-gap:56px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .win svg.in{animation:slidein .3s var(--ease) both}
+  @keyframes slidein{from{transform:translateX(18px);opacity:0}to{transform:none;opacity:1}}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
+</style>
+
+<body>
+<a class="skip" href="#looks-title">Pular para os looks</a>
 
 <header class="lid">
-  <div class="wrap">
+  <div class="wrap hero">
     <div class="brandrow">
       <div class="logo">
         <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path d="M27 3H4v24h23M4 15h23" fill="none" stroke="#1B1A17" stroke-width="4.2"/><rect x="22" y="10.7" width="5" height="2.2" fill="#1B1A17"/><rect x="22" y="22.7" width="5" height="2.2" fill="#1B1A17"/></svg>
@@ -85,9 +144,13 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:13px}
       </div>
       <div class="collab">× Nike</div>
     </div>
-    <h1>Seu par chegou. Agora ele tem casa e tem look.</h1>
-    <p>Três tênis, três caixas: escolha a sua coleção e veja combinações para cada momento do dia.</p>
-    <div class="box" aria-hidden="true">
+    <div>
+      <h1>Seu par chegou. Agora ele tem casa e tem look.</h1>
+      <p>Três tênis, três caixas: escolha a sua coleção e veja combinações para cada momento do dia.</p>
+      <a class="herocta" href="#looks-title">Ver looks do meu par</a>
+    </div>
+    <div class="box" id="box" aria-hidden="true">
+      <span class="seal"></span>
       <div class="win" id="hero"></div>
       <div class="front"><span id="heroName"></span><span class="hole"></span><span>Nº 40</span></div>
     </div>
@@ -95,86 +158,114 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:13px}
 </header>
 
 <main class="wrap">
-  <section aria-labelledby="t-par">
-    <div class="label">Passo 1</div>
-    <h2 id="t-par">Qual é o seu par?</h2>
-    <p class="sub">Cada coleção tem a sua caixa: verde-limão no esportivo, rosa no skate e azul no casual.</p>
-    <div class="pairs" id="pairs"></div>
+  <section aria-labelledby="looks-title">
+    <h2 id="looks-title" tabindex="-1">Qual é o seu par?</h2>
+    <p class="sub">Cada coleção tem a sua caixa: faixa verde-limão no esportivo, rosa no skate e azul no casual.</p>
+    <div class="pairs" id="pairs" role="group" aria-label="Coleção"></div>
     <div class="chips" id="chips" role="group" aria-label="Ocasião"></div>
-    <p class="sub"><span class="count" id="count"></span></p>
+    <p class="count" id="count" aria-live="polite"></p>
     <div class="looks" id="looks"></div>
   </section>
 
-  <section aria-labelledby="t-sap">
-    <div class="label">Sua caixa já é sapateira</div>
-    <h2 id="t-sap">Como usar a caixa ENCAIXE</h2>
-    <p class="sub">Ela não vai para o lixo: foi feita para ficar com você.</p>
-    <div class="steps">
-      <div class="step"><p><strong>Rompa o lacre</strong>O selo azul garante que o par chegou novo. Depois disso, a caixa abre e fecha quantas vezes quiser.</p></div>
-      <div class="step"><p><strong>Veja pela janela</strong>O visor da frente mostra o tênis sem precisar abrir a caixa.</p></div>
-      <div class="step"><p><strong>Levante a tampa</strong>A tampa abre por cima e pela frente ao mesmo tempo, e o par sai fácil. Use o furo para puxar.</p></div>
-      <div class="step"><p><strong>Empilhe</strong>Os encaixes da base entram nos da tampa de baixo. Cada par novo aumenta a sapateira.</p></div>
-    </div>
-  </section>
+  <div class="more">
+    <section aria-labelledby="t-sap">
+      <h2 id="t-sap">Sua caixa já é sapateira</h2>
+      <p class="sub">A caixa ENCAIXE não vai para o lixo: foi feita para ficar com você.</p>
+      <ol class="steps">
+        <li><p><strong>Rompa o lacre</strong>O selo azul garante que o par chegou novo. Depois disso, a caixa abre e fecha quantas vezes quiser.</p></li>
+        <li><p><strong>Veja pela janela</strong>O visor da frente mostra o tênis sem precisar abrir a caixa.</p></li>
+        <li><p><strong>Levante a tampa</strong>A tampa abre por cima e pela frente ao mesmo tempo, e o par sai fácil. Use o furo para puxar.</p></li>
+        <li><p><strong>Empilhe</strong>Os encaixes da base entram nos da tampa de baixo. Cada par novo aumenta a sapateira.</p></li>
+      </ol>
+    </section>
 
-  <section aria-labelledby="t-care">
-    <h2 id="t-care">Cuide do par</h2>
-    <p class="sub">Dicas rápidas para o tênis durar mais na sapateira.</p>
-    <div class="care">
-      <div><strong>Deixe respirar</strong>Guarde depois de 1 hora fora do pé, nunca úmido.</div>
-      <div><strong>Lave à mão</strong>Escova macia, sabão neutro e sombra para secar.</div>
-      <div><strong>Cadarço</strong>Tire para lavar e deixe de molho separado.</div>
-      <div><strong>Formato</strong>Use o papel da embalagem por dentro para manter a forma.</div>
-    </div>
-  </section>
+    <section aria-labelledby="t-care">
+      <h2 id="t-care">Cuide do par</h2>
+      <p class="sub">Dicas rápidas para o tênis durar mais na sapateira.</p>
+      <dl class="care">
+        <div><dt>Deixe respirar</dt><dd>Guarde depois de 1 hora fora do pé, nunca úmido.</dd></div>
+        <div><dt>Lave à mão</dt><dd>Escova macia, sabão neutro e sombra para secar.</dd></div>
+        <div><dt>Cadarço</dt><dd>Tire para lavar e deixe de molho separado.</dd></div>
+        <div><dt>Formato</dt><dd>Use o papel da embalagem por dentro para manter a forma.</dd></div>
+      </dl>
+    </section>
+  </div>
 
   <footer>Protótipo acadêmico de marketing estratégico. A marca ENCAIXE é fictícia e a collab com a Nike é uma proposta ilustrativa, sem vínculo com a marca. Os tênis são ilustrações genéricas.</footer>
 </main>
 
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <script>
-const SHOES = {"esportivo": "<svg aria-hidden=\"true\" viewBox=\"0 0 220 100\"><path d=\"M18 68 C14 50 18 32 30 26 C38 22 46 26 52 32 C58 36 64 32 70 22 C74 16 82 16 86 20 C100 32 130 46 170 52 C194 56 206 60 204 68 Z\" fill=\"#232327\" stroke=\"#1B1A17\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M18 68 C15 52 18 36 28 28 L40 32 L44 68Z\" fill=\"#34343A\" stroke=\"#1B1A17\" stroke-width=\"1.2\"/><path d=\"M56 64 L98 42 L110 48 L72 66Z\" fill=\"#C9F24B\"/><path d=\"M120 58 L150 50 L156 54 L128 62Z\" fill=\"#C9F24B\"/><path d=\"M76 24 L86 34 M86 28 L96 38 M96 32 L106 42 M106 36 L116 46\" stroke=\"#EDEDE8\" stroke-width=\"2.2\" stroke-linecap=\"round\"/><path d=\"M14 68 C10 68 8 76 12 82 L176 80 C196 80 210 74 210 66 C200 66 190 68 176 68 Z\" fill=\"#F1F1EC\" stroke=\"#1B1A17\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M12 82 C30 87 120 86 176 82 C196 81 208 76 210 68\" fill=\"none\" stroke=\"#C9F24B\" stroke-width=\"4\" stroke-linecap=\"round\"/><path d=\"M40 74 L60 74 M70 74 L90 74 M100 74 L120 74\" stroke=\"#1B1A17\" stroke-width=\".8\" opacity=\".35\"/></svg>", "skate": "<svg aria-hidden=\"true\" viewBox=\"0 0 220 100\"><path d=\"M14 72 C10 52 16 32 32 27 C44 24 54 30 60 36 C64 26 72 16 84 16 C94 16 100 22 106 28 C132 44 172 50 198 54 C208 56 212 62 210 72 Z\" fill=\"#C9AE86\" stroke=\"#1B1A17\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M150 50 C176 53 200 56 206 62 L206 72 L150 72 C144 64 144 56 150 50Z\" fill=\"#B39570\" stroke=\"#1B1A17\" stroke-width=\"1.2\"/><path d=\"M14 72 C11 54 16 38 28 31 L42 36 L46 72Z\" fill=\"#B39570\" stroke=\"#1B1A17\" stroke-width=\"1.2\"/><path d=\"M20 40 C26 28 42 24 58 35\" fill=\"none\" stroke=\"#F4EEE2\" stroke-width=\"7\" stroke-linecap=\"round\"/><path d=\"M20 40 C26 28 42 24 58 35\" fill=\"none\" stroke=\"#1B1A17\" stroke-width=\"1\" stroke-dasharray=\"2 2\" opacity=\".5\"/><ellipse cx=\"84\" cy=\"18\" rx=\"12\" ry=\"6\" fill=\"#F4EEE2\" stroke=\"#1B1A17\" stroke-width=\"1.4\"/><path d=\"M66 50 L124 50 L128 64 L62 64Z\" fill=\"#FF5FA2\" stroke=\"#1B1A17\" stroke-width=\"1.2\"/><path d=\"M68 53 L124 53\" stroke=\"#1B1A17\" stroke-width=\".7\" stroke-dasharray=\"2 2\" opacity=\".6\"/><path d=\"M78 26 L90 36 M88 28 L100 38 M98 32 L110 42 M108 36 L120 46\" stroke=\"#F4EEE2\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M78 26 L90 36 M88 28 L100 38 M98 32 L110 42 M108 36 L120 46\" stroke=\"#1B1A17\" stroke-width=\".7\" stroke-linecap=\"round\" opacity=\".5\"/><rect x=\"9\" y=\"70\" width=\"203\" height=\"17\" rx=\"6\" fill=\"#B9773A\" stroke=\"#1B1A17\" stroke-width=\"1.6\"/><path d=\"M14 76 H206\" stroke=\"#F4EEE2\" stroke-width=\"2.4\"/><path d=\"M190 70 C202 70 210 74 211 80\" fill=\"none\" stroke=\"#1B1A17\" stroke-width=\"1.2\"/></svg>", "casual": "<svg aria-hidden=\"true\" viewBox=\"0 0 220 100\"><path d=\"M14 72 C11 52 18 34 32 30 C42 28 50 32 56 38 C62 30 70 20 80 20 C90 20 96 26 102 32 C130 48 170 54 196 56 C206 58 210 64 208 72 Z\" fill=\"#F6F5F1\" stroke=\"#1B1A17\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M152 52 C172 54 192 58 204 64 L204 72 L154 72 C148 64 148 58 152 52Z\" fill=\"#E7E4DD\" stroke=\"#1B1A17\" stroke-width=\"1.2\"/><path d=\"M14 72 C11 54 17 38 28 32 L40 36 L46 72Z\" fill=\"#E7E4DD\" stroke=\"#1B1A17\" stroke-width=\"1.2\"/><rect x=\"14\" y=\"40\" width=\"9\" height=\"22\" rx=\"2\" fill=\"#2338C9\"/><path d=\"M58 66 L136 66\" stroke=\"#2338C9\" stroke-width=\"4\" stroke-linecap=\"round\"/><g fill=\"#1B1A17\" opacity=\".35\"><circle cx=\"164\" cy=\"60\" r=\"1.2\"/><circle cx=\"172\" cy=\"61\" r=\"1.2\"/><circle cx=\"180\" cy=\"62\" r=\"1.2\"/><circle cx=\"168\" cy=\"65\" r=\"1.2\"/><circle cx=\"176\" cy=\"66\" r=\"1.2\"/><circle cx=\"184\" cy=\"66\" r=\"1.2\"/></g><path d=\"M76 26 L86 36 M86 28 L96 38 M96 32 L106 42 M106 36 L116 46\" stroke=\"#1B1A17\" stroke-width=\"1.6\" stroke-linecap=\"round\"/><rect x=\"10\" y=\"70\" width=\"200\" height=\"14\" rx=\"5\" fill=\"#FFFFFF\" stroke=\"#1B1A17\" stroke-width=\"1.6\"/><path d=\"M18 77 H202\" stroke=\"#CFCBC2\" stroke-width=\"1.2\" stroke-dasharray=\"3 3\"/></svg>"};
-const PAIRS = {"esportivo": {"name": "Esportivo", "cor": "Preto Volt", "upper": "#232327"}, "skate": {"name": "Skate", "cor": "Camurça Rosa", "upper": "#C9AE86"}, "casual": {"name": "Casual", "cor": "Branco Cobalto", "upper": "#F6F5F1"}};
-const OCC = {todos:"Todos", dia:"Dia a dia", aula:"Faculdade e trabalho", role:"Rolê", treino:"Treino e esporte"};
+const SHOES = {"esportivo":"<svg aria-hidden=\"true\" viewBox=\"0 0 220 100\"><ellipse cx=\"112\" cy=\"92\" rx=\"98\" ry=\"3.6\" fill=\"#000\" opacity=\".22\"/>\n<path d=\"M12 80 C14 87 22 90 34 90 L174 88 C192 87 205 81 211 72 L208 70 C200 79 188 83 172 84 L34 86 C24 86 16 84 12 80Z\" fill=\"#0F0F11\"/>\n<path d=\"M15 64 C10 70 9 78 13 82 C17 85 25 86 35 86 L171 84 C189 83 203 78 209 70 C211 67 209 64 204 64 Z\" fill=\"#F1F1EC\" stroke=\"#141416\" stroke-width=\"1.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n<path d=\"M30 80 C70 79 120 78 168 76 C186 75 198 72 206 67\" fill=\"none\" stroke=\"#C9F24B\" stroke-width=\"3\"/>\n<path d=\"M40 72 C60 70 74 74 92 72 C110 70 124 74 146 71\" fill=\"none\" stroke=\"#1B1A17\" stroke-width=\".8\" opacity=\".3\"/>\n<path d=\"M16 65 C11 54 12 40 19 30 C22 26 27 24 31 25 C39 28 45 32 51 33 C55 33 57 31 59 27 L64 16 C65 12 70 11 73 14 C77 19 80 24 86 28 C104 38 128 46 156 50 C182 53 200 57 206 63 L204 65 Z\" fill=\"#2C2D33\" stroke=\"#141416\" stroke-width=\"1.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n<path d=\"M16 65 C11 54 12 40 19 30 C22 26 27 24 31 25 C34 36 37 52 42 65 Z\" fill=\"#43454E\" stroke=\"#141416\" stroke-width=\"1.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n<path d=\"M156 50 C182 53 200 57 206 63 L204 65 L158 65 C152 60 151 54 156 50Z\" fill=\"#3A3C44\" stroke=\"#141416\" stroke-width=\"1.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n<g fill=\"#55585F\"><circle cx=\"168\" cy=\"57\" r=\".9\"/><circle cx=\"176\" cy=\"58\" r=\".9\"/><circle cx=\"184\" cy=\"59\" r=\".9\"/><circle cx=\"192\" cy=\"61\" r=\".9\"/><circle cx=\"172\" cy=\"61\" r=\".9\"/><circle cx=\"180\" cy=\"62\" r=\".9\"/><circle cx=\"188\" cy=\"63\" r=\".9\"/></g>\n<path d=\"M38 62 C66 60 92 56 112 50 C120 48 126 47 132 48\" fill=\"none\" stroke=\"#C9F24B\" stroke-width=\"4.2\" stroke-linecap=\"round\"/>\n<path d=\"M58 34 C58 31 61 30 64 31 C72 33 80 32 86 30 C104 40 128 47 154 51 L150 56 C124 52 100 45 82 37 C74 39 67 39 62 38 C59 37 58 36 58 34Z\" fill=\"#1E1F23\" stroke=\"#141416\" stroke-width=\"1.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n<path d=\"M87 34.5 L96 40.5 M88 40.5 L97 34.5\" stroke=\"#EDEDE8\" stroke-width=\"2.2\" stroke-linecap=\"round\"/><path d=\"M101 40 L110 46 M102 46 L111 40\" stroke=\"#EDEDE8\" stroke-width=\"2.2\" stroke-linecap=\"round\"/><path d=\"M115 44.5 L124 50.5 M116 50.5 L125 44.5\" stroke=\"#EDEDE8\" stroke-width=\"2.2\" stroke-linecap=\"round\"/><path d=\"M129 48 L138 54 M130 54 L139 48\" stroke=\"#EDEDE8\" stroke-width=\"2.2\" stroke-linecap=\"round\"/><circle cx=\"86.5\" cy=\"34.5\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"97.5\" cy=\"34.5\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"100.5\" cy=\"40\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"111.5\" cy=\"40\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"114.5\" cy=\"44.5\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"125.5\" cy=\"44.5\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"128.5\" cy=\"48\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"139.5\" cy=\"48\" r=\".9\" fill=\"#141416\" opacity=\".6\"/>\n<path d=\"M19 30 C17 25 17 21 20 20 C23 19 26 23 27 26\" fill=\"none\" stroke=\"#C9F24B\" stroke-width=\"3\" stroke-linecap=\"round\"/>\n<path d=\"M22 32 C28 29 36 31 44 35\" fill=\"none\" stroke=\"#6A6C74\" stroke-width=\"1.2\" stroke-linecap=\"round\"/>\n</svg>","skate":"<svg aria-hidden=\"true\" viewBox=\"0 0 220 100\"><ellipse cx=\"112\" cy=\"92\" rx=\"98\" ry=\"3.6\" fill=\"#000\" opacity=\".22\"/>\n<path d=\"M10 68 L207 68 C211 68 212 70 212 73 L212 83 C212 87 209 90 204 90 L17 90 C12 90 9 87 9 82 L9 71 C9 69 10 68 12 68Z\" fill=\"#B9773A\" stroke=\"#141416\" stroke-width=\"1.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n<path d=\"M10 74 H211\" stroke=\"#F4EEE2\" stroke-width=\"3\"/>\n<path d=\"M10 85 C10 87 12 88 16 88 H205 C209 88 211 87 211 84\" fill=\"none\" stroke=\"#8E5728\" stroke-width=\"2.4\"/>\n<path d=\"M14 80 H208\" stroke=\"#1B1A17\" stroke-width=\".7\" stroke-dasharray=\"2.5 2.5\" opacity=\".45\"/>\n<path d=\"M12 68 C9 52 11 36 18 26 C22 21 29 20 34 23 C42 28 48 30 54 28 C58 26 60 22 62 17 C65 11 73 9 79 12 C84 15 86 20 88 26 C108 38 136 46 164 50 C188 53 204 57 208 64 L208 68 Z\" fill=\"#C9AE86\" stroke=\"#141416\" stroke-width=\"1.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n<path d=\"M12 68 C9 52 11 36 18 26 C21 22 25 21 28 22 C32 38 36 54 42 68Z\" fill=\"#B39570\" stroke=\"#141416\" stroke-width=\"1.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n<path d=\"M150 50 C176 52 200 56 208 64 L208 68 L148 68 C141 62 141 54 150 50Z\" fill=\"#B39570\" stroke=\"#141416\" stroke-width=\"1.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n<path d=\"M152 53 C176 55 196 58 204 64\" fill=\"none\" stroke=\"#1B1A17\" stroke-width=\".7\" stroke-dasharray=\"2 2\" opacity=\".5\"/>\n<path d=\"M18 30 C22 24 30 23 36 27 C44 32 52 33 58 29\" fill=\"none\" stroke=\"#F4EEE2\" stroke-width=\"6.5\" stroke-linecap=\"round\"/>\n<path d=\"M18 30 C22 24 30 23 36 27 C44 32 52 33 58 29\" fill=\"none\" stroke=\"#1B1A17\" stroke-width=\"1\" opacity=\".35\"/>\n<path d=\"M62 17 C65 11 73 9 79 12 C84 15 86 20 88 26 C80 28 70 30 60 29 C60 25 61 21 62 17Z\" fill=\"#F4EEE2\" stroke=\"#141416\" stroke-width=\"1.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n<path d=\"M56 33 C56 30 59 29 62 30 C70 31 80 28 88 26 C108 38 134 46 160 50 L154 58 C128 54 104 46 86 36 C76 38 66 38 60 37 C57 36 56 35 56 33Z\" fill=\"#FF5FA2\" stroke=\"#141416\" stroke-width=\"1.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n<path d=\"M62 34 C72 35 80 32 87 30 C106 41 130 48 154 53\" fill=\"none\" stroke=\"#1B1A17\" stroke-width=\".7\" stroke-dasharray=\"2 2\" opacity=\".55\"/>\n<path d=\"M44 60 C70 60 100 58 132 60\" fill=\"none\" stroke=\"#1B1A17\" stroke-width=\".7\" stroke-dasharray=\"2 2\" opacity=\".45\"/>\n<path d=\"M89 32.5 L98 38.5 M90 38.5 L99 32.5\" stroke=\"#F4EEE2\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M103 38.5 L112 44.5 M104 44.5 L113 38.5\" stroke=\"#F4EEE2\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M117 43.5 L126 49.5 M118 49.5 L127 43.5\" stroke=\"#F4EEE2\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M131 47.5 L140 53.5 M132 53.5 L141 47.5\" stroke=\"#F4EEE2\" stroke-width=\"3\" stroke-linecap=\"round\"/><circle cx=\"88.5\" cy=\"32.5\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"99.5\" cy=\"32.5\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"102.5\" cy=\"38.5\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"113.5\" cy=\"38.5\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"116.5\" cy=\"43.5\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"127.5\" cy=\"43.5\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"130.5\" cy=\"47.5\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"141.5\" cy=\"47.5\" r=\".9\" fill=\"#141416\" opacity=\".6\"/>\n</svg>","casual":"<svg aria-hidden=\"true\" viewBox=\"0 0 220 100\"><ellipse cx=\"112\" cy=\"92\" rx=\"98\" ry=\"3.6\" fill=\"#000\" opacity=\".22\"/>\n<path d=\"M10 72 L207 72 C210 72 212 74 212 77 L212 83 C212 86 210 88 206 88 L16 88 C12 88 10 86 10 83Z\" fill=\"#FFFFFF\" stroke=\"#141416\" stroke-width=\"1.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n<path d=\"M14 80 H208\" stroke=\"#CFCBC2\" stroke-width=\"1.1\" stroke-dasharray=\"3 2.5\"/>\n<path d=\"M10 85 C11 87 13 88 16 88 H206 C209 88 211 87 212 85\" fill=\"none\" stroke=\"#2338C9\" stroke-width=\"1.6\"/>\n<path d=\"M13 72 C10 60 12 47 19 39 C23 35 30 34 36 36 C44 39 50 41 56 39 C60 37 62 33 64 29 C67 24 74 23 78 26 C82 28 84 32 87 35 C108 46 140 54 170 57 C192 59 205 63 208 70 L208 72 Z\" fill=\"#F6F5F1\" stroke=\"#141416\" stroke-width=\"1.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n<path d=\"M13 72 C10 60 12 47 19 39 C22 36 26 35 30 35 C33 46 36 60 40 72 Z\" fill=\"#ECEAE4\" stroke=\"#141416\" stroke-width=\"1.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n<path d=\"M156 55 C182 57 202 61 208 70 L208 72 L154 72 C148 66 148 59 156 55Z\" fill=\"#ECEAE4\" stroke=\"#141416\" stroke-width=\"1.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n<g fill=\"#1B1A17\" opacity=\".3\"><circle cx=\"166\" cy=\"62\" r=\".9\"/><circle cx=\"174\" cy=\"63\" r=\".9\"/><circle cx=\"182\" cy=\"64\" r=\".9\"/><circle cx=\"190\" cy=\"65\" r=\".9\"/><circle cx=\"170\" cy=\"66\" r=\".9\"/><circle cx=\"178\" cy=\"67\" r=\".9\"/><circle cx=\"186\" cy=\"68\" r=\".9\"/><circle cx=\"196\" cy=\"67\" r=\".9\"/></g>\n<path d=\"M58 40 C58 38 60 37 63 38 C71 39 80 37 87 35 C108 46 136 53 162 57 L158 62 C132 58 106 51 86 42 C76 44 68 44 62 43 C59 42 58 41 58 40Z\" fill=\"#ECEAE4\" stroke=\"#141416\" stroke-width=\"1.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n<path d=\"M64 28 C67 24 74 23 78 26 L80 30 L66 32 Z\" fill=\"#2338C9\"/>\n<path d=\"M89 40.5 L98 46.5 M90 46.5 L99 40.5\" stroke=\"#FFFFFF\" stroke-width=\"2.6\" stroke-linecap=\"round\"/><path d=\"M103 46 L112 52 M104 52 L113 46\" stroke=\"#FFFFFF\" stroke-width=\"2.6\" stroke-linecap=\"round\"/><path d=\"M117 50.5 L126 56.5 M118 56.5 L127 50.5\" stroke=\"#FFFFFF\" stroke-width=\"2.6\" stroke-linecap=\"round\"/><path d=\"M131 54 L140 60 M132 60 L141 54\" stroke=\"#FFFFFF\" stroke-width=\"2.6\" stroke-linecap=\"round\"/><circle cx=\"88.5\" cy=\"40.5\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"99.5\" cy=\"40.5\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"102.5\" cy=\"46\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"113.5\" cy=\"46\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"116.5\" cy=\"50.5\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"127.5\" cy=\"50.5\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"130.5\" cy=\"54\" r=\".9\" fill=\"#141416\" opacity=\".6\"/><circle cx=\"141.5\" cy=\"54\" r=\".9\" fill=\"#141416\" opacity=\".6\"/>\n<path d=\"M89 40.5 L98 46.5 M90 46.5 L99 40.5\" stroke=\"#1B1A17\" stroke-width=\".6\" opacity=\".35\"/><path d=\"M103 46 L112 52 M104 52 L113 46\" stroke=\"#1B1A17\" stroke-width=\".6\" opacity=\".35\"/><path d=\"M117 50.5 L126 56.5 M118 56.5 L127 50.5\" stroke=\"#1B1A17\" stroke-width=\".6\" opacity=\".35\"/><path d=\"M131 54 L140 60 M132 60 L141 54\" stroke=\"#1B1A17\" stroke-width=\".6\" opacity=\".35\"/>\n<path d=\"M12 46 C13 43 15 41 18 40 L22 40 C21 50 22 62 24 72 L13 72 C11 64 11 54 12 46Z\" fill=\"#2338C9\" stroke=\"#141416\" stroke-width=\"1.4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>\n<path d=\"M44 66 C70 66 110 66 140 64\" fill=\"none\" stroke=\"#1B1A17\" stroke-width=\".6\" stroke-dasharray=\"2 2\" opacity=\".35\"/>\n</svg>"};
+const PAIRS = {"esportivo": {"name": "Esportivo", "cor": "Preto Volt", "upper": "#2C2D33"}, "skate": {"name": "Skate", "cor": "Camurça Rosa", "upper": "#C9AE86"}, "casual": {"name": "Casual", "cor": "Branco Cobalto", "upper": "#F6F5F1"}};
 const LOOKS = [{"p": "esportivo", "o": "treino", "n": "Corrida no parque", "c": [["Regata dry fit preta", "#1A1A1A"], ["Short de corrida grafite", "#3B3D42"], ["Boné verde-limão", "#C9F24B"]], "t": "Repetir o verde-limão do tênis em uma peça só deixa o visual de treino completo."}, {"p": "esportivo", "o": "dia", "n": "Centro da cidade", "c": [["Moletom cinza mescla", "#9A9A9A"], ["Jogger preta", "#202022"], ["Pochete transversal", "#C9F24B"]], "t": "Tênis de corrida com jogger é o jeito mais fácil de usar o esportivo fora do treino."}, {"p": "esportivo", "o": "aula", "n": "Reunião de grupo", "c": [["Polo de malha preta", "#1C1C1E"], ["Calça de alfaiataria cinza", "#6E6F73"], ["Jaqueta corta-vento preta", "#26262A"]], "t": "Monocromático escuro esconde que o tênis é esportivo e fica arrumado."}, {"p": "esportivo", "o": "role", "n": "Show à noite", "c": [["Camiseta de banda preta", "#151515"], ["Calça cargo grafite", "#3B3D42"], ["Corta-vento verde-limão", "#C9F24B"]], "t": "Uma peça de cor forte e todo o resto neutro."}, {"p": "skate", "o": "treino", "n": "Sessão na pista", "c": [["Camiseta oversized off-white", "#EFE9DD"], ["Calça carpinteiro bege", "#BFA67E"], ["Gorro rosa", "#FF5FA2"]], "t": "Calça larga por cima do tênis é a regra do skate; o rosa aparece no gorro."}, {"p": "skate", "o": "dia", "n": "Feira de domingo", "c": [["Camisa xadrez flanela", "#7A4B3A"], ["Bermuda de sarja oliva", "#6B6A3E"], ["Meia branca cano médio", "#F5F5F5"]], "t": "Meia aparecendo combina com tênis de cano acolchoado."}, {"p": "skate", "o": "role", "n": "Barzinho no fim de tarde", "c": [["Camiseta estampada rosa", "#FF8DBD"], ["Jeans largo azul", "#5A79A8"], ["Corrente prata", "#BFC3C7"]], "t": "Estampa só em uma peça; o tom camurça do tênis segura o resto."}, {"p": "skate", "o": "aula", "n": "Apresentação na faculdade", "c": [["Camisa de linho bege", "#D8C8AA"], ["Calça reta marrom", "#5A3B24"], ["Mochila preta", "#1E1E1E"]], "t": "Tons terrosos com o tênis camurça deixam o look arrumado sem perder o estilo."}, {"p": "casual", "o": "dia", "n": "Café com os amigos", "c": [["Camiseta branca básica", "#FFFFFF"], ["Jeans azul médio", "#5A79A8"], ["Óculos tartaruga", "#6A4126"]], "t": "O clássico que nunca erra. Mantenha o tênis bem limpo."}, {"p": "casual", "o": "aula", "n": "Primeiro dia de estágio", "c": [["Camisa oxford azul-clara", "#BFD0EA"], ["Chino areia", "#CDB98F"], ["Cinto marrom", "#5A3B24"]], "t": "Tênis branco limpo deixa o visual social mais atual."}, {"p": "casual", "o": "role", "n": "Praia em Floripa", "c": [["Camisa de linho branca", "#F6F3EC"], ["Short de alfaiataria azul", "#2338C9"], ["Colar de contas", "#E1C9A0"]], "t": "Branco com azul cobalto, a cor do detalhe do tênis."}, {"p": "casual", "o": "treino", "n": "Caminhada leve", "c": [["Camiseta dry fit branca", "#FFFFFF"], ["Short azul-marinho", "#25304A"], ["Viseira branca", "#F2F2F2"]], "t": "Para treino leve o casual funciona; para correr, prefira o esportivo."}];
+const ACCENT = {esportivo:"#C9F24B", skate:"#FF5FA2", casual:"#2338C9"};
+const OCC = {todos:"Todos", dia:"Dia a dia", aula:"Faculdade e trabalho", role:"Rolê", treino:"Treino e esporte", salvos:"Salvos"};
+const HEART = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="currentColor"/></svg>`;
 let state = {pair:"esportivo", occ:"todos", saved:[]};
 try{ state.saved = JSON.parse(localStorage.getItem("encaixe-saved")||"[]"); }catch(e){ state.saved=[]; }
 
-function renderHero(){
+function renderHero(animate){
   const c = PAIRS[state.pair];
-  document.getElementById("hero").innerHTML = SHOES[state.pair];
-  document.getElementById("heroName").textContent = `${c.name} · ${c.cor}`;
+  const win = document.getElementById("hero");
+  win.innerHTML = SHOES[state.pair];
+  if(animate) win.firstElementChild.classList.add("in");
+  document.documentElement.style.setProperty("--accent", ACCENT[state.pair]);
+  document.getElementById("heroName").textContent = `${c.name} ${c.cor}`;
 }
 function renderPairs(){
   document.getElementById("pairs").innerHTML = Object.entries(PAIRS).map(([k,c]) =>
-    `<button class="pair" type="button" id="pair-${k}" data-k="${k}" aria-pressed="${state.pair===k}">${SHOES[k]}<b>${c.name}</b><small>${c.cor}</small></button>`).join("");
+    `<button class="pair" type="button" id="pair-${k}" data-k="${k}" style="--sw:${ACCENT[k]}" aria-pressed="${state.pair===k}">${SHOES[k]}<b>${c.name}</b><small>${c.cor}</small></button>`).join("");
 }
 function renderChips(){
-  document.getElementById("chips").innerHTML = Object.entries(OCC).map(([k,v]) =>
-    `<button class="chip" type="button" id="occ-${k}" data-k="${k}" aria-pressed="${state.occ===k}">${v}</button>`).join("");
+  document.getElementById("chips").innerHTML = Object.entries(OCC).map(([k,v]) => {
+    const label = k==="salvos" ? `Salvos (${state.saved.length})` : v;
+    return `<button class="chip${k==="salvos"?" saved":""}" type="button" id="occ-${k}" data-k="${k}" aria-pressed="${state.occ===k}">${label}</button>`;
+  }).join("");
+}
+function lookCard(l){
+  const on = state.saved.includes(l.i);
+  const pal = PAIRS[l.p];
+  const where = state.occ==="salvos" ? `${OCC[l.o]}, par ${pal.name}` : OCC[l.o];
+  return `<article class="look">
+    <div class="lookhead"><div><div class="occ">${where}</div><h3>${l.n}</h3></div>
+    <button class="save" type="button" id="save-${l.i}" data-i="${l.i}" aria-pressed="${on}" aria-label="${on?"Remover dos salvos":"Salvar look"}: ${l.n}">${on?HEART+"Salvo":"Salvar"}</button></div>
+    <div class="palette" aria-hidden="true">${l.c.map(x=>`<i style="background:${x[1]}"></i>`).join("")}<i class="shoe" style="background:${pal.upper}"></i></div>
+    <ul class="pieces">${l.c.map(x=>`<li><b style="background:${x[1]}"></b>${x[0]}</li>`).join("")}<li class="shoe"><b style="background:${pal.upper}"></b>Tênis ${pal.name} ${pal.cor}</li></ul>
+    <p class="tip"><strong>Dica:</strong> ${l.t}</p></article>`;
 }
 function renderLooks(){
-  const list = LOOKS.map((l,i)=>({...l,i})).filter(l => l.p===state.pair && (state.occ==="todos" || l.o===state.occ));
+  const all = LOOKS.map((l,i)=>({...l,i}));
+  const list = state.occ==="salvos"
+    ? all.filter(l => state.saved.includes(l.i))
+    : all.filter(l => l.p===state.pair && (state.occ==="todos" || l.o===state.occ));
   const pal = PAIRS[state.pair];
-  document.getElementById("count").textContent = `${list.length} ${list.length===1?"look":"looks"} para o par ${pal.name} ${pal.cor}`;
-  document.getElementById("looks").innerHTML = list.map(l => {
-    const on = state.saved.includes(l.i);
-    return `<article class="look">
-      <div class="lookhead"><div><div class="label">${OCC[l.o]}</div><h3>${l.n}</h3></div>
-      <button class="save" type="button" id="save-${l.i}" data-i="${l.i}" aria-pressed="${on}">${on?"Salvo":"Salvar"}</button></div>
-      <div class="palette">${l.c.map(x=>`<i style="background:${x[1]}"></i>`).join("")}<i style="background:${pal.upper}"></i></div>
-      <ul class="pieces">${l.c.map(x=>`<li><b style="background:${x[1]}"></b>${x[0]}</li>`).join("")}<li><b style="background:${pal.upper}"></b>Tênis ENCAIXE × Nike ${pal.name} ${pal.cor}</li></ul>
-      <p class="tip">${l.t}</p></article>`;
-  }).join("");
+  const n = list.length;
+  document.getElementById("count").textContent = state.occ==="salvos"
+    ? (n ? `${n} ${n===1?"look salvo":"looks salvos"}, de todas as coleções` : "")
+    : `${n} ${n===1?"look":"looks"} para o ${pal.name} ${pal.cor}`;
+  document.getElementById("looks").innerHTML = n ? list.map(lookCard).join("")
+    : `<div class="empty"><p>Você ainda não salvou nenhum look. Toque em Salvar nos looks que quiser guardar.</p><button class="linkbtn" type="button" id="see-all">Ver todos os looks</button></div>`;
+}
+let toastTimer;
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("on");
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove("on"), 1800);
 }
 document.addEventListener("click", e => {
   const p = e.target.closest(".pair"), c = e.target.closest(".chip"), s = e.target.closest(".save");
-  if(p){ state.pair=p.dataset.k; renderPairs(); renderHero(); renderLooks(); }
+  if(p && p.dataset.k!==state.pair){ state.pair=p.dataset.k; if(state.occ==="salvos") state.occ="todos"; renderPairs(); renderChips(); renderHero(true); renderLooks(); }
   if(c){ state.occ=c.dataset.k; renderChips(); renderLooks(); }
-  if(s){ const i=+s.dataset.i; state.saved = state.saved.includes(i) ? state.saved.filter(x=>x!==i) : [...state.saved,i];
+  if(e.target.closest("#see-all")){ state.occ="todos"; renderChips(); renderLooks(); }
+  if(s){ const i=+s.dataset.i, had = state.saved.includes(i);
+    state.saved = had ? state.saved.filter(x=>x!==i) : [...state.saved,i];
     try{ localStorage.setItem("encaixe-saved", JSON.stringify(state.saved)); }catch(err){}
-    renderLooks(); }
+    renderChips(); renderLooks(); toast(had ? "Look removido dos salvos" : "Look salvo");
+    const again = document.getElementById(`save-${i}`); (again || document.getElementById("occ-salvos")).focus(); }
 });
-renderHero(); renderPairs(); renderChips(); renderLooks();
+renderHero(false); renderPairs(); renderChips(); renderLooks();
 </script>
 
 </body>
