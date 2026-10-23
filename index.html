@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="ENCAIXE × Nike: escolha seu tênis e veja looks para cada momento.">
+<title>Encaixe Galeria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: coluna de celular; a "tampa" kraft no topo e o tênis escolhido aparece na janela da caixa */
+:root{
+  --kraft:#C8A271; --kraft-2:#E6D3B5; --kraft-d:#9C7A4C; --paper:#F7F1E7; --ink:#1B1A17; --muted:#6B6258;
+  --cobalt:#2338C9; --line:#D9C9AE; --card:#FFFDF9; --window:#2A231B;
+  --display:"Unbounded", "Arial Black", system-ui, sans-serif;
+  --body:"Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --kraft:#B48D5C; --kraft-2:#3A2F22; --kraft-d:#8A6A40; --paper:#17150F; --ink:#F2EADC; --muted:#B4A792;
+  --cobalt:#8D9CFF; --line:#3B3427; --card:#201D16; --window:#0F0D0A; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --kraft:#B48D5C; --kraft-2:#3A2F22; --kraft-d:#8A6A40; --paper:#17150F; --ink:#F2EADC; --muted:#B4A792;
+  --cobalt:#8D9CFF; --line:#3B3427; --card:#201D16; --window:#0F0D0A; color-scheme:dark }
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:560px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left,0px));padding-right:max(16px, env(safe-area-inset-right,0px))}
+header.lid{background:var(--kraft);color:#1B1A17;padding-block:22px 28px}
+.brandrow{display:flex;align-items:center;gap:10px;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;letter-spacing:.04em;font-size:20px}
+.collab{font-size:12px;text-transform:uppercase;letter-spacing:.14em;font-weight:600}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(25px,6.6vw,33px);line-height:1.12;margin:20px 0 8px;text-wrap:balance}
+.lid p{margin:0;max-width:40ch}
+.box{margin-top:22px;background:#B8925F;border-radius:6px;padding:14px 14px 0;position:relative}
+.box .win{background:var(--window);border-radius:10px 10px 0 0;padding:14px 18px 0;display:flex;justify-content:center}
+.box .win svg{width:100%;max-width:400px;height:auto;display:block}
+.box .front{background:#C8A271;margin:0 -14px;padding:10px 14px 12px;display:flex;justify-content:space-between;align-items:center;border-top:2px solid #9C7A4C;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#1B1A17}
+.box .hole{width:18px;height:18px;border-radius:50%;background:#2A231B}
+section{padding-block:28px 8px}
+h2{font-family:var(--display);font-weight:700;font-size:18px;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 16px;font-size:15px}
+.label{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);font-weight:600}
+.pairs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pair{border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:10px 6px 8px;cursor:pointer;text-align:center;color:var(--ink);font:inherit;display:grid;gap:2px}
+.pair svg{width:100%;height:auto;display:block}
+.pair b{font-size:13px}.pair small{font-size:11px;color:var(--muted)}
+.pair[aria-pressed="true"]{border-color:var(--cobalt);box-shadow:0 0 0 2px var(--cobalt) inset}
+.pair:focus-visible,.chip:focus-visible,.save:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin:18px 0 6px}
+.chip{flex:none;border:1.5px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;font-weight:500;cursor:pointer;min-height:40px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.looks{display:grid;gap:14px;margin-top:10px}
+.look{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:12px}
+.lookhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.look h3{font-family:var(--display);font-weight:500;font-size:16px;margin:2px 0 0}
+.save{border:1.5px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;min-width:44px;min-height:44px;font-size:13px;font-weight:600;cursor:pointer;padding:0 10px}
+.save[aria-pressed="true"]{background:var(--cobalt);border-color:var(--cobalt);color:#fff}
+.palette{display:flex;height:14px;border-radius:4px;overflow:hidden}
+.palette i{flex:1}
+ul.pieces{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+ul.pieces li{display:flex;align-items:center;gap:10px;font-size:15px}
+ul.pieces b{width:14px;height:14px;border-radius:50%;flex:none;border:1px solid rgba(0,0,0,.18)}
+.tip{font-size:14px;color:var(--muted);border-top:1px dashed var(--line);padding-top:10px;margin:0}
+.steps{display:grid;gap:12px;counter-reset:s}
+.step{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:start}
+.step::before{counter-increment:s;content:counter(s);font-family:var(--display);font-weight:700;width:44px;height:44px;border-radius:8px;background:var(--kraft);color:#1B1A17;display:grid;place-items:center}
+.step p{margin:0}.step strong{display:block}
+.care{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.care div{background:var(--kraft-2);border-radius:10px;padding:12px;font-size:14px}
+.care strong{display:block;font-size:13px;margin-bottom:2px}
+footer{padding-block:28px 40px;color:var(--muted);font-size:13px}
+.count{font-variant-numeric:tabular-nums}
+@media (max-width:380px){.care{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:no-preference){.look{animation:in .25s ease both}@keyframes in{from{transform:translateY(6px)}to{transform:none}}}
+</style>
+</head>
+<body>
+
+
+<header class="lid">
+  <div class="wrap">
+    <div class="brandrow">
+      <div class="logo">
+        <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path d="M27 3H4v24h23M4 15h23" fill="none" stroke="#1B1A17" stroke-width="4.2"/><rect x="22" y="10.7" width="5" height="2.2" fill="#1B1A17"/><rect x="22" y="22.7" width="5" height="2.2" fill="#1B1A17"/></svg>
+        ENCAIXE
+      </div>
+      <div class="collab">× Nike</div>
+    </div>
+    <h1>Seu par chegou. Agora ele tem casa e tem look.</h1>
+    <p>Três tênis, três caixas: escolha a sua coleção e veja combinações para cada momento do dia.</p>
+    <div class="box" aria-hidden="true">
+      <div class="win" id="hero"></div>
+      <div class="front"><span id="heroName"></span><span class="hole"></span><span>Nº 40</span></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section aria-labelledby="t-par">
+    <div class="label">Passo 1</div>
+    <h2 id="t-par">Qual é o seu par?</h2>
+    <p class="sub">Cada coleção tem a sua caixa: verde-limão no esportivo, rosa no skate e azul no casual.</p>
+    <div class="pairs" id="pairs"></div>
+    <div class="chips" id="chips" role="group" aria-label="Ocasião"></div>
+    <p class="sub"><span class="count" id="count"></span></p>
+    <div class="looks" id="looks"></div>
+  </section>
+
+  <section aria-labelledby="t-sap">
+    <div class="label">Sua caixa já é sapateira</div>
+    <h2 id="t-sap">Como usar a caixa ENCAIXE</h2>
+    <p class="sub">Ela não vai para o lixo: foi feita para ficar com você.</p>
+    <div class="steps">
+      <div class="step"><p><strong>Rompa o lacre</strong>O selo azul garante que o par chegou novo. Depois disso, a caixa abre e fecha quantas vezes quiser.</p></div>
+      <div class="step"><p><strong>Veja pela janela</strong>O visor da frente mostra o tênis sem precisar abrir a caixa.</p></div>
+      <div class="step"><p><strong>Levante a tampa</strong>A tampa abre por cima e pela frente ao mesmo tempo, e o par sai fácil. Use o furo para puxar.</p></div>
+      <div class="step"><p><strong>Empilhe</strong>Os encaixes da base entram nos da tampa de baixo. Cada par novo aumenta a sapateira.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="t-care">
+    <h2 id="t-care">Cuide do par</h2>
+    <p class="sub">Dicas rápidas para o tênis durar mais na sapateira.</p>
+    <div class="care">
+      <div><strong>Deixe respirar</strong>Guarde depois de 1 hora fora do pé, nunca úmido.</div>
+      <div><strong>Lave à mão</strong>Escova macia, sabão neutro e sombra para secar.</div>
+      <div><strong>Cadarço</strong>Tire para lavar e deixe de molho separado.</div>
+      <div><strong>Formato</strong>Use o papel da embalagem por dentro para manter a forma.</div>
+    </div>
+  </section>
+
+  <footer>Protótipo acadêmico de marketing estratégico. A marca ENCAIXE é fictícia e a collab com a Nike é uma proposta ilustrativa, sem vínculo com a marca. Os tênis são ilustrações genéricas.</footer>
+</main>
+
+<script>
+const SHOES = {"esportivo": "<svg aria-hidden=\"true\" viewBox=\"0 0 220 100\"><path d=\"M18 68 C14 50 18 32 30 26 C38 22 46 26 52 32 C58 36 64 32 70 22 C74 16 82 16 86 20 C100 32 130 46 170 52 C194 56 206 60 204 68 Z\" fill=\"#232327\" stroke=\"#1B1A17\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M18 68 C15 52 18 36 28 28 L40 32 L44 68Z\" fill=\"#34343A\" stroke=\"#1B1A17\" stroke-width=\"1.2\"/><path d=\"M56 64 L98 42 L110 48 L72 66Z\" fill=\"#C9F24B\"/><path d=\"M120 58 L150 50 L156 54 L128 62Z\" fill=\"#C9F24B\"/><path d=\"M76 24 L86 34 M86 28 L96 38 M96 32 L106 42 M106 36 L116 46\" stroke=\"#EDEDE8\" stroke-width=\"2.2\" stroke-linecap=\"round\"/><path d=\"M14 68 C10 68 8 76 12 82 L176 80 C196 80 210 74 210 66 C200 66 190 68 176 68 Z\" fill=\"#F1F1EC\" stroke=\"#1B1A17\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M12 82 C30 87 120 86 176 82 C196 81 208 76 210 68\" fill=\"none\" stroke=\"#C9F24B\" stroke-width=\"4\" stroke-linecap=\"round\"/><path d=\"M40 74 L60 74 M70 74 L90 74 M100 74 L120 74\" stroke=\"#1B1A17\" stroke-width=\".8\" opacity=\".35\"/></svg>", "skate": "<svg aria-hidden=\"true\" viewBox=\"0 0 220 100\"><path d=\"M14 72 C10 52 16 32 32 27 C44 24 54 30 60 36 C64 26 72 16 84 16 C94 16 100 22 106 28 C132 44 172 50 198 54 C208 56 212 62 210 72 Z\" fill=\"#C9AE86\" stroke=\"#1B1A17\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M150 50 C176 53 200 56 206 62 L206 72 L150 72 C144 64 144 56 150 50Z\" fill=\"#B39570\" stroke=\"#1B1A17\" stroke-width=\"1.2\"/><path d=\"M14 72 C11 54 16 38 28 31 L42 36 L46 72Z\" fill=\"#B39570\" stroke=\"#1B1A17\" stroke-width=\"1.2\"/><path d=\"M20 40 C26 28 42 24 58 35\" fill=\"none\" stroke=\"#F4EEE2\" stroke-width=\"7\" stroke-linecap=\"round\"/><path d=\"M20 40 C26 28 42 24 58 35\" fill=\"none\" stroke=\"#1B1A17\" stroke-width=\"1\" stroke-dasharray=\"2 2\" opacity=\".5\"/><ellipse cx=\"84\" cy=\"18\" rx=\"12\" ry=\"6\" fill=\"#F4EEE2\" stroke=\"#1B1A17\" stroke-width=\"1.4\"/><path d=\"M66 50 L124 50 L128 64 L62 64Z\" fill=\"#FF5FA2\" stroke=\"#1B1A17\" stroke-width=\"1.2\"/><path d=\"M68 53 L124 53\" stroke=\"#1B1A17\" stroke-width=\".7\" stroke-dasharray=\"2 2\" opacity=\".6\"/><path d=\"M78 26 L90 36 M88 28 L100 38 M98 32 L110 42 M108 36 L120 46\" stroke=\"#F4EEE2\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M78 26 L90 36 M88 28 L100 38 M98 32 L110 42 M108 36 L120 46\" stroke=\"#1B1A17\" stroke-width=\".7\" stroke-linecap=\"round\" opacity=\".5\"/><rect x=\"9\" y=\"70\" width=\"203\" height=\"17\" rx=\"6\" fill=\"#B9773A\" stroke=\"#1B1A17\" stroke-width=\"1.6\"/><path d=\"M14 76 H206\" stroke=\"#F4EEE2\" stroke-width=\"2.4\"/><path d=\"M190 70 C202 70 210 74 211 80\" fill=\"none\" stroke=\"#1B1A17\" stroke-width=\"1.2\"/></svg>", "casual": "<svg aria-hidden=\"true\" viewBox=\"0 0 220 100\"><path d=\"M14 72 C11 52 18 34 32 30 C42 28 50 32 56 38 C62 30 70 20 80 20 C90 20 96 26 102 32 C130 48 170 54 196 56 C206 58 210 64 208 72 Z\" fill=\"#F6F5F1\" stroke=\"#1B1A17\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M152 52 C172 54 192 58 204 64 L204 72 L154 72 C148 64 148 58 152 52Z\" fill=\"#E7E4DD\" stroke=\"#1B1A17\" stroke-width=\"1.2\"/><path d=\"M14 72 C11 54 17 38 28 32 L40 36 L46 72Z\" fill=\"#E7E4DD\" stroke=\"#1B1A17\" stroke-width=\"1.2\"/><rect x=\"14\" y=\"40\" width=\"9\" height=\"22\" rx=\"2\" fill=\"#2338C9\"/><path d=\"M58 66 L136 66\" stroke=\"#2338C9\" stroke-width=\"4\" stroke-linecap=\"round\"/><g fill=\"#1B1A17\" opacity=\".35\"><circle cx=\"164\" cy=\"60\" r=\"1.2\"/><circle cx=\"172\" cy=\"61\" r=\"1.2\"/><circle cx=\"180\" cy=\"62\" r=\"1.2\"/><circle cx=\"168\" cy=\"65\" r=\"1.2\"/><circle cx=\"176\" cy=\"66\" r=\"1.2\"/><circle cx=\"184\" cy=\"66\" r=\"1.2\"/></g><path d=\"M76 26 L86 36 M86 28 L96 38 M96 32 L106 42 M106 36 L116 46\" stroke=\"#1B1A17\" stroke-width=\"1.6\" stroke-linecap=\"round\"/><rect x=\"10\" y=\"70\" width=\"200\" height=\"14\" rx=\"5\" fill=\"#FFFFFF\" stroke=\"#1B1A17\" stroke-width=\"1.6\"/><path d=\"M18 77 H202\" stroke=\"#CFCBC2\" stroke-width=\"1.2\" stroke-dasharray=\"3 3\"/></svg>"};
+const PAIRS = {"esportivo": {"name": "Esportivo", "cor": "Preto Volt", "upper": "#232327"}, "skate": {"name": "Skate", "cor": "Camurça Rosa", "upper": "#C9AE86"}, "casual": {"name": "Casual", "cor": "Branco Cobalto", "upper": "#F6F5F1"}};
+const OCC = {todos:"Todos", dia:"Dia a dia", aula:"Faculdade e trabalho", role:"Rolê", treino:"Treino e esporte"};
+const LOOKS = [{"p": "esportivo", "o": "treino", "n": "Corrida no parque", "c": [["Regata dry fit preta", "#1A1A1A"], ["Short de corrida grafite", "#3B3D42"], ["Boné verde-limão", "#C9F24B"]], "t": "Repetir o verde-limão do tênis em uma peça só deixa o visual de treino completo."}, {"p": "esportivo", "o": "dia", "n": "Centro da cidade", "c": [["Moletom cinza mescla", "#9A9A9A"], ["Jogger preta", "#202022"], ["Pochete transversal", "#C9F24B"]], "t": "Tênis de corrida com jogger é o jeito mais fácil de usar o esportivo fora do treino."}, {"p": "esportivo", "o": "aula", "n": "Reunião de grupo", "c": [["Polo de malha preta", "#1C1C1E"], ["Calça de alfaiataria cinza", "#6E6F73"], ["Jaqueta corta-vento preta", "#26262A"]], "t": "Monocromático escuro esconde que o tênis é esportivo e fica arrumado."}, {"p": "esportivo", "o": "role", "n": "Show à noite", "c": [["Camiseta de banda preta", "#151515"], ["Calça cargo grafite", "#3B3D42"], ["Corta-vento verde-limão", "#C9F24B"]], "t": "Uma peça de cor forte e todo o resto neutro."}, {"p": "skate", "o": "treino", "n": "Sessão na pista", "c": [["Camiseta oversized off-white", "#EFE9DD"], ["Calça carpinteiro bege", "#BFA67E"], ["Gorro rosa", "#FF5FA2"]], "t": "Calça larga por cima do tênis é a regra do skate; o rosa aparece no gorro."}, {"p": "skate", "o": "dia", "n": "Feira de domingo", "c": [["Camisa xadrez flanela", "#7A4B3A"], ["Bermuda de sarja oliva", "#6B6A3E"], ["Meia branca cano médio", "#F5F5F5"]], "t": "Meia aparecendo combina com tênis de cano acolchoado."}, {"p": "skate", "o": "role", "n": "Barzinho no fim de tarde", "c": [["Camiseta estampada rosa", "#FF8DBD"], ["Jeans largo azul", "#5A79A8"], ["Corrente prata", "#BFC3C7"]], "t": "Estampa só em uma peça; o tom camurça do tênis segura o resto."}, {"p": "skate", "o": "aula", "n": "Apresentação na faculdade", "c": [["Camisa de linho bege", "#D8C8AA"], ["Calça reta marrom", "#5A3B24"], ["Mochila preta", "#1E1E1E"]], "t": "Tons terrosos com o tênis camurça deixam o look arrumado sem perder o estilo."}, {"p": "casual", "o": "dia", "n": "Café com os amigos", "c": [["Camiseta branca básica", "#FFFFFF"], ["Jeans azul médio", "#5A79A8"], ["Óculos tartaruga", "#6A4126"]], "t": "O clássico que nunca erra. Mantenha o tênis bem limpo."}, {"p": "casual", "o": "aula", "n": "Primeiro dia de estágio", "c": [["Camisa oxford azul-clara", "#BFD0EA"], ["Chino areia", "#CDB98F"], ["Cinto marrom", "#5A3B24"]], "t": "Tênis branco limpo deixa o visual social mais atual."}, {"p": "casual", "o": "role", "n": "Praia em Floripa", "c": [["Camisa de linho branca", "#F6F3EC"], ["Short de alfaiataria azul", "#2338C9"], ["Colar de contas", "#E1C9A0"]], "t": "Branco com azul cobalto, a cor do detalhe do tênis."}, {"p": "casual", "o": "treino", "n": "Caminhada leve", "c": [["Camiseta dry fit branca", "#FFFFFF"], ["Short azul-marinho", "#25304A"], ["Viseira branca", "#F2F2F2"]], "t": "Para treino leve o casual funciona; para correr, prefira o esportivo."}];
+let state = {pair:"esportivo", occ:"todos", saved:[]};
+try{ state.saved = JSON.parse(localStorage.getItem("encaixe-saved")||"[]"); }catch(e){ state.saved=[]; }
+
+function renderHero(){
+  const c = PAIRS[state.pair];
+  document.getElementById("hero").innerHTML = SHOES[state.pair];
+  document.getElementById("heroName").textContent = `${c.name} · ${c.cor}`;
+}
+function renderPairs(){
+  document.getElementById("pairs").innerHTML = Object.entries(PAIRS).map(([k,c]) =>
+    `<button class="pair" type="button" id="pair-${k}" data-k="${k}" aria-pressed="${state.pair===k}">${SHOES[k]}<b>${c.name}</b><small>${c.cor}</small></button>`).join("");
+}
+function renderChips(){
+  document.getElementById("chips").innerHTML = Object.entries(OCC).map(([k,v]) =>
+    `<button class="chip" type="button" id="occ-${k}" data-k="${k}" aria-pressed="${state.occ===k}">${v}</button>`).join("");
+}
+function renderLooks(){
+  const list = LOOKS.map((l,i)=>({...l,i})).filter(l => l.p===state.pair && (state.occ==="todos" || l.o===state.occ));
+  const pal = PAIRS[state.pair];
+  document.getElementById("count").textContent = `${list.length} ${list.length===1?"look":"looks"} para o par ${pal.name} ${pal.cor}`;
+  document.getElementById("looks").innerHTML = list.map(l => {
+    const on = state.saved.includes(l.i);
+    return `<article class="look">
+      <div class="lookhead"><div><div class="label">${OCC[l.o]}</div><h3>${l.n}</h3></div>
+      <button class="save" type="button" id="save-${l.i}" data-i="${l.i}" aria-pressed="${on}">${on?"Salvo":"Salvar"}</button></div>
+      <div class="palette">${l.c.map(x=>`<i style="background:${x[1]}"></i>`).join("")}<i style="background:${pal.upper}"></i></div>
+      <ul class="pieces">${l.c.map(x=>`<li><b style="background:${x[1]}"></b>${x[0]}</li>`).join("")}<li><b style="background:${pal.upper}"></b>Tênis ENCAIXE × Nike ${pal.name} ${pal.cor}</li></ul>
+      <p class="tip">${l.t}</p></article>`;
+  }).join("");
+}
+document.addEventListener("click", e => {
+  const p = e.target.closest(".pair"), c = e.target.closest(".chip"), s = e.target.closest(".save");
+  if(p){ state.pair=p.dataset.k; renderPairs(); renderHero(); renderLooks(); }
+  if(c){ state.occ=c.dataset.k; renderChips(); renderLooks(); }
+  if(s){ const i=+s.dataset.i; state.saved = state.saved.includes(i) ? state.saved.filter(x=>x!==i) : [...state.saved,i];
+    try{ localStorage.setItem("encaixe-saved", JSON.stringify(state.saved)); }catch(err){}
+    renderLooks(); }
+});
+renderHero(); renderPairs(); renderChips(); renderLooks();
+</script>
+
+</body>
+</html>
