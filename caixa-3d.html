@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Veja a caixa ENCAIXE em 3D: escolha a coleção e a estampa e veja a caixa abrir e virar sapateira.">
+<meta name="theme-color" content="#C8A271">
+<title>Caixa ENCAIXE em 3D</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 30 30%27%3E%3Crect width=%2730%27 height=%2730%27 rx=%276%27 fill=%27%23C8A271%27/%3E%3Cpath d=%27M24 6H7v18h17M7 15h17%27 fill=%27none%27 stroke=%27%231B1A17%27 stroke-width=%273.4%27/%3E%3C/svg%3E">
+<script>
+// ?embed=1: a página está dentro do index.html; esconde a marca e o rodapé e passa a altura para a página de fora
+if(new URLSearchParams(location.search).has("embed")) document.documentElement.classList.add("embed");
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: palco 3D ocupando a tela, painel de controle à direita (embaixo no celular). Um único visual: papel kraft e tinta. */
+:root{
+  --paper:#EFE7DA; --panel:#FBF8F2; --ink:#1B1A17; --muted:#6B6258; --line:#DCCDB3; --kraft:#C8A271;
+  --acc:#C9F24B; --accInk:#1B1A17;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;display:flex;overflow:hidden}
+#stage{position:relative;flex:1;min-width:0;min-height:0;background:var(--paper)}
+#stage canvas{display:block;width:100%;height:100%;touch-action:none}
+.tag{position:absolute;top:14px;left:max(16px, env(safe-area-inset-left,0px));display:flex;gap:8px;align-items:center;flex-wrap:wrap;pointer-events:none}
+.tag span{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600}
+.tag .st{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.hint{position:absolute;bottom:12px;left:max(16px, env(safe-area-inset-left,0px));font-size:12px;color:var(--muted);pointer-events:none}
+[hidden]{display:none!important}
+#nogl{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--muted)}
+#panel{width:360px;flex:none;background:var(--panel);border-left:1px solid var(--line);overflow-y:auto;padding-block:22px 28px;padding-left:max(20px, env(safe-area-inset-left,0px));padding-right:max(20px, env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:.03em}
+.brand small{font-family:var(--body);font-weight:600;font-size:12px;letter-spacing:.12em;color:var(--muted)}
+h1{font-family:var(--display);font-weight:700;font-size:23px;line-height:1.15;margin:0;text-wrap:balance}
+.lead{margin:6px 0 0;color:var(--muted)}
+.lab{font-size:14px;font-weight:600;margin-bottom:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+button{font:inherit;color:inherit;cursor:pointer}
+.opt{border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:10px;text-align:left;display:grid;gap:4px;min-height:44px}
+.opt b{font-size:14px}.opt small{font-size:12px;color:var(--muted);line-height:1.3}
+.opt .dot{width:18px;height:18px;border-radius:50%;border:1px solid rgba(0,0,0,.2)}
+.opt img{width:100%;aspect-ratio:2/1;object-fit:cover;border-radius:6px;display:block;max-width:100%}
+.opt[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 1.5px var(--ink) inset}
+.steps{display:grid;gap:6px}
+.step{display:grid;grid-template-columns:30px 1fr;align-items:center;gap:10px;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:8px 10px;text-align:left;min-height:44px}
+.step i{font-style:normal;font-family:var(--display);font-weight:700;width:30px;height:30px;border-radius:7px;background:var(--paper);display:grid;place-items:center;font-size:13px}
+.step[aria-pressed="true"]{background:var(--acc);color:var(--accInk);border-color:var(--acc)}
+.step[aria-pressed="true"] i{background:rgba(255,255,255,.35)}
+.play{margin-top:8px;width:100%;border:0;border-radius:10px;background:var(--ink);color:var(--panel);font-weight:600;padding:12px;min-height:44px}
+.cap{background:var(--paper);border-radius:10px;padding:12px 14px;font-size:14px}
+.cap b{display:block;font-family:var(--display);font-weight:500;font-size:14px;margin-bottom:2px}
+.foot{font-size:12px;color:var(--muted);margin-top:auto}
+.back{display:inline-flex;align-items:center;min-height:44px;margin:-10px 0 -10px auto;padding:0 4px;color:var(--ink);font-family:var(--body);font-size:14px;font-weight:600;letter-spacing:0;text-underline-offset:3px}
+.back:focus-visible{outline:3px solid #2338C9;outline-offset:2px;border-radius:6px}
+/* Embutida no site: a seção de fora já tem título e rodapé */
+.embed .brand,.embed .intro,.embed .foot{display:none}
+.embed #panel{padding-block:18px 20px}
+@media (max-width:760px){
+  .embed,.embed body{height:auto}
+  .embed body{overflow:visible}
+  .embed #stage{height:380px}
+  .embed #panel{flex:none}
+}
+button:focus-visible{outline:3px solid #2338C9;outline-offset:2px}
+@media (max-width:760px){
+  body{flex-direction:column}
+  #stage{flex:none;height:54%}
+  #panel{width:auto;flex:1;border-left:0;border-top:1px solid var(--line);padding-block:16px 24px}
+}
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <div id="nogl" hidden>Seu navegador não conseguiu abrir o 3D. Tente pelo Chrome ou Safari atualizado.</div>
+  <div class="tag"><span class="st" id="tagState">Chega lacrada</span><span id="tagCol">Coleção Esportivo</span></div>
+  <div class="hint">Arraste para girar. Role ou use dois dedos para aproximar.</div>
+</div>
+
+<aside id="panel">
+  <div class="brand">
+    <svg width="26" height="26" viewBox="0 0 30 30" aria-hidden="true"><path d="M27 3H4v24h23M4 15h23" fill="none" stroke="#1B1A17" stroke-width="4.2"/><rect x="22" y="10.7" width="5" height="2.2" fill="#1B1A17"/><rect x="22" y="22.7" width="5" height="2.2" fill="#1B1A17"/></svg>
+    ENCAIXE <small>× NIKE</small>
+    <a class="back" href="index.html">Voltar ao site</a>
+  </div>
+  <div class="intro">
+    <h1>A caixa em 3D</h1>
+    <p class="lead">Escolha a coleção e a estampa, e veja a caixa abrir e virar sapateira. Medidas reais: 32 × 20 × 12 cm.</p>
+  </div>
+  <div><div class="lab">Coleção</div><div class="grid3" id="cols"></div></div>
+  <div><div class="lab">Estampa</div><div class="grid2" id="vars"></div></div>
+  <div>
+    <div class="lab">Movimento</div>
+    <div class="steps" id="steps"></div>
+    <button class="play" id="play" type="button">Apresentar em sequência</button>
+  </div>
+  <div class="cap" id="cap"></div>
+  <p class="foot">Protótipo acadêmico. ENCAIXE é uma marca fictícia e a collab com a Nike é ilustrativa, sem vínculo com a marca. Modelo feito com Three.js, biblioteca 3D open source.</p>
+</aside>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+const QR_SRC = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQgAAAEICAIAAAAslP2oAAAFBElEQVR4nO3dUYocNxRA0UzwIgLJ/leWgHfR+Q7cwgj0kCpzzrddXdOei6CeVfr6fD6/Af/1++kbgBsJA4IwIAgDgjAgCAOCMCAIA4IwIAgDgjAgCAOCMCAIA4IwIPxY/Qt//fnHxH1s9/c/P7dc5+nnfbr+6vezep9vuZ/brP5cVgwIwoAgDAjCgCAMCMKAIAwIy3OMJ7vmBqt2PUffdZ3VecKuOcP0vGLV238frBgQhAFBGBCEAUEYEIQBQRgQts0xnkzPB3aZnj+sfu6Tt8893vL7YMWAIAwIwoAgDAjCgCAMCMKAMD7HeLvVOcCp/RhP3vLep9tYMSAIA4IwIAgDgjAgCAOCMCCYY/zC6rxil13zk1Pvd3o7KwYEYUAQBgRhQBAGBGFAEAaE8TnGbc/Rp/cnTF9/en/I6ueuuu334YkVA4IwIAgDgjAgCAOCMCAIA8K2Ocbb31+063n/9PV3zSumf963/z5YMSAIA4IwIAgDgjAgCAOCMCB8fT6f0/fwre16b9Vb9mO8hRUDgjAgCAOCMCAIA4IwIAgDwvIc4+3P3U+dq33qOruuP/3nb2PFgCAMCMKAIAwIwoAgDAjCgHDsnO/p59+n5hWrpq8zff73bXObXdexYkAQBgRhQBAGBGFAEAYEYUDY9l6p2/ZXnJpLPJmeG+xy2/e2atf3bMWAIAwIwoAgDAjCgCAMCMKAsLwf47Zzo6fnG9PP9d+yb+TJ9HuiTs1JrBgQhAFBGBCEAUEYEIQBQRgQjp3zfdv/41916lyIt8w93nJeyhMrBgRhQBAGBGFAEAYEYUAQBoTx/Ri7nHouftu8Ytdz/ek5wKrpfTKrrBgQhAFBGBCEAUEYEIQBQRgQtp3zveuc6enn8btMP0d/cmq/xLTb3n9lxYAgDAjCgCAMCMKAIAwIwoAw/l6p2/7f/6nzPVZN389t56/fth/GigFBGBCEAUEYEIQBQRgQhAHh2H6M6c+d9vZzzW87j+K2/SFWDAjCgCAMCMKAIAwIwoAgDAj2Y/zC9Lkcu65z2/niT6bvf9d1rBgQhAFBGBCEAUEYEIQBQRgQlucYb3kv05Pb5gC37UN48t3mUVYMCMKAIAwIwoAgDAjCgCAMCMvvlZp+X9Bbnvffdp/T9zN9Lvtt/75WDAjCgCAMCMKAIAwIwoAgDAjLc4zb9mPctk9g9XNvO7d7l1PnhOxixYAgDAjCgCAMCMKAIAwIwoAwfj7GbabnBqufe9v+jSen3q916t/LigFBGBCEAUEYEIQBQRgQhAFh236M2zw9t77t/UWnzrd+y3uiTp1nYsWAIAwIwoAgDAjCgCAMCMKAsDzHePKWfQXT+xB2XX/XXGLa9D6NU6wYEIQBQRgQhAFBGBCEAUEYELbNMZ6cei/Q6nWmn6NP7yuY3p9w6vtZtet7sGJAEAYEYUAQBgRhQBAGBGFAGJ9j3GZ6/8b0df6vbpt3WTEgCAOCMCAIA4IwIAgDgjAgfLs5xvQ+h9v2RZw6z/vJ9LzCfgwYJAwIwoAgDAjCgCAMCMKAMD7HuO1c7SfT84fVz30y/V6s6bnNbe+PemLFgCAMCMKAIAwIwoAgDAjCgLBtjvGW9yadek/UqXnFrv0nu+Ybq07NwawYEIQBQRgQhAFBGBCEAUEYEL4+n8/pe4DrWDEgCAOCMCAIA4IwIAgDgjAgCAOCMCAIA4IwIAgDgjAgCAOCMCD8C0RnH22d1DNMAAAAAElFTkSuQmCC";
+const COLS = {
+  esportivo:{nome:"Esportivo", tenis:"Preto Volt", acc:"#C9F24B", accInk:"#1B1A17", upper:"#2A2A2F", sole:"#F1F1EC", outsole:"#C9F24B", detail:"#C9F24B",
+    est:[["Listras","Faixas diagonais de velocidade"],["Pista","Raias de corrida em verde-limão"]],
+    up:[[18,70],[15,52],[18,34],[30,25],[44,24],[52,31],[62,30],[70,20],[80,16],[88,19],[100,31],[130,45],[170,51],[196,55],[206,61],[204,70]],
+    so:[[10,70],[206,68],[211,72],[206,80],[176,84],[14,84],[9,78]], bot:84,
+    dec:[[[56,64],[98,42],[110,48],[72,66]],[[120,58],[150,50],[156,54],[128,62]]]},
+  skate:{nome:"Skate", tenis:"Camurça Rosa", acc:"#FF5FA2", accInk:"#1B1A17", upper:"#C9AE86", sole:"#F4EEE2", outsole:"#B9773A", detail:"#FF5FA2",
+    est:[["Lixa","Os pontos da lixa do shape"],["Xadrez","O quadriculado clássico do skate"]],
+    up:[[14,72],[10,52],[16,33],[32,27],[46,26],[56,32],[62,34],[68,22],[78,15],[92,16],[100,22],[106,28],[132,44],[172,50],[198,54],[208,57],[212,63],[210,72]],
+    so:[[9,70],[212,70],[213,80],[210,87],[11,87],[8,80]], bot:87,
+    dec:[[[66,50],[124,50],[128,64],[62,64]]]},
+  casual:{nome:"Casual", tenis:"Branco Cobalto", acc:"#2338C9", accInk:"#FFFFFF", upper:"#F6F5F1", sole:"#FFFFFF", outsole:"#CFCBC2", detail:"#2338C9",
+    est:[["Risca fina","Limpa e clássica"],["Monograma","O E da ENCAIXE repetido"]],
+    up:[[14,72],[11,53],[18,35],[32,30],[44,29],[52,34],[58,37],[64,29],[72,21],[82,20],[92,21],[98,27],[104,33],[130,47],[170,53],[196,56],[206,59],[210,65],[208,72]],
+    so:[[10,70],[210,70],[212,77],[208,84],[12,84],[8,77]], bot:84,
+    dec:[[[58,64],[136,64],[136,68],[58,68]],[[14,40],[23,40],[23,62],[14,62]]]}
+};
+const KEYS = ["esportivo","skate","casual"];
+const STATES = [
+  {n:"Chega lacrada", d:"O lacre une a janela à frente e prova que o par chegou novo. A janela já mostra o tênis."},
+  {n:"Tampa aberta", d:"Na caixa do topo da pilha, a tampa inteira levanta e o par sai por cima."},
+  {n:"Frente aberta", d:"No meio da pilha, a janela sobe e a frente baixa desce. O par sai sem desmontar nada."},
+  {n:"Sapateira", d:"Os pinos sob o fundo entram nas fendas da tampa de baixo. Cada coleção vira um andar da sapateira."}
+];
+const L=32, W=20, H=12, HF=5, FL=7.5, G=0.25, T=0.32, TILE=4;
+const KRAFT="#C49F6E", INNER="#D9BE93", EDGE="#A9844F", INK="#1B1A17";
+
+let state = {col:"esportivo", step:0, vars:{esportivo:0, skate:0, casual:0}, playing:false};
+
+/* ---------- desenho das estampas (em cm) ---------- */
+function logoPath(ctx, x, y, s, color){
+  ctx.save(); ctx.translate(x,y); ctx.scale(s/30,s/30);
+  ctx.strokeStyle=color; ctx.fillStyle=color; ctx.lineWidth=4.2; ctx.lineJoin="miter";
+  ctx.beginPath(); ctx.moveTo(27,3); ctx.lineTo(4,3); ctx.lineTo(4,27); ctx.lineTo(27,27); ctx.moveTo(4,15); ctx.lineTo(27,15); ctx.stroke();
+  ctx.fillRect(22,10.7,5,2.2); ctx.fillRect(22,22.7,5,2.2); ctx.restore();
+}
+function pattern(ctx, w, h, key, v){
+  const c = COLS[key];
+  ctx.save();
+  if(key==="esportivo" && v===0){
+    ctx.fillStyle=c.acc; ctx.fillRect(0,0,w,h); ctx.fillStyle="rgba(27,26,23,.88)";
+    for(let i=-h-2;i<w+h+2;i+=2){ ctx.beginPath(); ctx.moveTo(i,h); ctx.lineTo(i+0.55,h); ctx.lineTo(i+0.55+h,0); ctx.lineTo(i+h,0); ctx.fill(); }
+  } else if(key==="esportivo"){
+    ctx.fillStyle="#1B1A17"; ctx.fillRect(0,0,w,h); ctx.strokeStyle=c.acc; ctx.lineWidth=0.12;
+    for(let y=0.5;y<h+1;y+=1){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
+    ctx.strokeStyle="rgba(241,241,236,.55)"; ctx.lineWidth=0.06; ctx.setLineDash([0.3,0.3]);
+    for(let y=1;y<h+1;y+=2){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
+  } else if(key==="skate" && v===0){
+    ctx.fillStyle=c.acc; ctx.fillRect(0,0,w,h); ctx.fillStyle="#C93E7E";
+    for(let r=0, y=0.5; y<h+1; y+=1, r++) for(let x=(r%2?0.5:0); x<w+1; x+=1){ ctx.beginPath(); ctx.arc(x,y,0.17,0,Math.PI*2); ctx.fill(); }
+  } else if(key==="skate"){
+    for(let y=0;y<h;y+=1) for(let x=0;x<w;x+=1){ ctx.fillStyle=((x+y)%2===0)?c.acc:"#1B1A17"; ctx.fillRect(x,y,1,1); }
+  } else if(key==="casual" && v===0){
+    ctx.fillStyle=c.acc; ctx.fillRect(0,0,w,h); ctx.strokeStyle="rgba(255,255,255,.55)"; ctx.lineWidth=0.05;
+    for(let x=0.4;x<w+1;x+=0.8){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
+  } else {
+    ctx.fillStyle=c.acc; ctx.fillRect(0,0,w,h);
+    for(let r=0,y=0.5;y<h+1;y+=2,r++) for(let x=(r%2?1.5:0.5);x<w+1;x+=2) logoPath(ctx,x-0.5,y-0.5,1.0,"#5367E6");
+  }
+  ctx.restore();
+}
+function canvasCm(wcm, hcm, px, draw){
+  const cv=document.createElement("canvas"); cv.width=Math.round(wcm*px); cv.height=Math.round(hcm*px);
+  const ctx=cv.getContext("2d"); ctx.scale(px,px); draw(ctx); return cv;
+}
+const tileCache={};
+function tileCanvas(key,v){
+  const id=key+v; if(!tileCache[id]) tileCache[id]=canvasCm(TILE,TILE,64,ctx=>pattern(ctx,TILE,TILE,key,v));
+  return tileCache[id];
+}
+function swatch(key,v){ return canvasCm(8,4,40,ctx=>pattern(ctx,8,4,key,v)).toDataURL(); }
+
+/* ---------- 3D ---------- */
+let renderer, scene, camera, controls, boxes={}, clock;
+function tex(cv){ const t=new THREE.CanvasTexture(cv); t.anisotropy=8; return t; }
+function tileTex(key,v,wcm,hcm,ox,oy){
+  const t=new THREE.CanvasTexture(tileCanvas(key,v)); t.wrapS=t.wrapT=THREE.RepeatWrapping;
+  t.repeat.set(wcm/TILE,hcm/TILE); t.offset.set((ox||0)/TILE,(oy||0)/TILE); t.anisotropy=8; return t;
+}
+const M = (o)=>new THREE.MeshStandardMaterial(Object.assign({roughness:.92,metalness:0},o));
+function slab(w,h,d,faces){
+  const inner=M({color:INNER}), edge=M({color:EDGE});
+  const arr=[edge,edge,edge,edge,edge,edge];
+  Object.entries(faces||{}).forEach(([i,m])=>arr[+i]=m);
+  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),arr); m.castShadow=true; m.receiveShadow=true; return m;
+}
+const font=(s,w)=>`${w||800} ${s}px Unbounded, "Arial Black", sans-serif`;
+const bfont=(s,w)=>`${w||600} ${s}px "Instrument Sans", Arial, sans-serif`;
+
+function lidTopCanvas(key,v){
+  const c=COLS[key], w=L+2*G, d=W+2*G, px=36;
+  return canvasCm(w,d,px,ctx=>{
+    ctx.fillStyle=KRAFT; ctx.fillRect(0,0,w,d);
+    ctx.save(); ctx.beginPath(); ctx.rect(0,d-5,w,5); ctx.clip(); pattern(ctx,w,d,key,v); ctx.restore();
+    logoPath(ctx,w/2-8.3,4.2,3.4,INK);
+    ctx.fillStyle=INK; ctx.font=font(2.35); ctx.textBaseline="middle"; ctx.fillText("ENCAIXE",w/2-4.3,5.95);
+    ctx.textAlign="center"; ctx.font=font(1.05,500); ctx.fillText("Seu tênis tem casa.",w/2,11.6);
+    ctx.font=bfont(0.62,500); ctx.fillText(`Coleção ${c.nome}  ·  ENCAIXE × Nike`,w/2,13.1);
+    ctx.fillStyle="rgba(27,26,23,.75)"; ctx.fillRect(4.2,9.0,4,0.18); ctx.fillRect(w-8.2,9.0,4,0.18);
+  });
+}
+function frontCanvas(key){
+  const c=COLS[key];
+  return canvasCm(L,HF,40,ctx=>{
+    ctx.fillStyle=KRAFT; ctx.fillRect(0,0,L,HF);
+    ctx.fillStyle=INK; ctx.textBaseline="middle"; ctx.font=font(0.75); ctx.fillText("ENCAIXE × NIKE",1.2,HF/2+0.1);
+    ctx.textAlign="right"; ctx.font=bfont(0.62); ctx.fillText(`${c.tenis} · Nº 40`,L-1.2,HF/2+0.1);
+    ctx.fillStyle="#2A231B"; ctx.beginPath(); ctx.arc(L/2,HF/2,1.1,0,Math.PI*2); ctx.fill();
+  });
+}
+function sideCanvas(key){
+  const c=COLS[key];
+  return canvasCm(W,H,36,ctx=>{
+    ctx.fillStyle=KRAFT; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle=INK; ctx.textAlign="center"; ctx.textBaseline="middle";
+    ctx.font=font(0.66); ctx.fillText(`ENCAIXE × NIKE · ${c.nome.toUpperCase()}`,W/2,H-2.9);
+    ctx.font=bfont(0.5,500); ctx.fillText("Abra pela tampa ou pela frente · empilhe",W/2,H-1.9);
+  });
+}
+function backCanvas(){
+  return canvasCm(L,H,32,ctx=>{
+    ctx.fillStyle=KRAFT; ctx.fillRect(0,0,L,H); ctx.fillStyle=INK; ctx.textAlign="center"; ctx.textBaseline="middle";
+    ctx.font=font(0.8,500); ctx.fillText("Esta caixa já é sapateira.",L/2,H/2-0.4);
+    ctx.font=bfont(0.62,500); ctx.fillText("Não jogue fora: empilhe.  ·  Papelão kraft 100% reciclável",L/2,H/2+0.9);
+  });
+}
+function nameCanvas(key){
+  const c=COLS[key];
+  return canvasCm(L+2*G,2,40,ctx=>{ ctx.fillStyle=c.accInk; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.font=font(0.95); ctx.fillText(c.nome.toUpperCase(),(L+2*G)*0.74,1.05); });
+}
+
+function shapeOf(pts, sc, bot){
+  const s=new THREE.Shape(); const v=pts.map(([x,y])=>new THREE.Vector2((x-110)*sc,(bot-y)*sc));
+  s.moveTo(v[0].x,v[0].y); s.splineThru(v.slice(1)); s.lineTo(v[0].x,v[0].y); return s;
+}
+function polyOf(pts, sc, bot){
+  const s=new THREE.Shape(); pts.forEach(([x,y],i)=>{ const X=(x-110)*sc, Y=(bot-y)*sc; i?s.lineTo(X,Y):s.moveTo(X,Y); }); return s;
+}
+function makeShoe(key){
+  const c=COLS[key], sc=0.125, depth=7.2, bev=0.55, g=new THREE.Group();
+  const ext=(shape,d,b)=>{ const geo=new THREE.ExtrudeGeometry(shape,{depth:d,bevelEnabled:true,bevelThickness:b,bevelSize:b,bevelSegments:3,curveSegments:16}); geo.translate(0,0,-d/2); return geo; };
+  const up=new THREE.Mesh(ext(shapeOf(c.up,sc,c.bot),depth,bev),M({color:c.upper,roughness:.75}));
+  const so=new THREE.Mesh(ext(polyOf(c.so,sc,c.bot),depth+0.3,0.45),M({color:c.sole,roughness:.6}));
+  const ob=new THREE.Mesh(new THREE.BoxGeometry(24.6,0.45,depth+1.1),M({color:c.outsole,roughness:.8}));
+  ob.position.set(0,0.22,0);
+  [up,so,ob].forEach(m=>{m.castShadow=true; m.receiveShadow=true; g.add(m);});
+  c.dec.forEach(p=>{
+    const geo=new THREE.ShapeGeometry(polyOf(p,sc,c.bot));
+    [1,-1].forEach(sd=>{ const m=new THREE.Mesh(geo,M({color:c.detail,roughness:.6,side:THREE.DoubleSide})); m.position.z=sd*(depth/2+bev+0.03); g.add(m); });
+  });
+  for(let i=0;i<4;i++){
+    const lace=new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.12,depth*0.7,8),M({color:key==="esportivo"?"#EDEDE8":key==="skate"?"#F4EEE2":"#FFFFFF"}));
+    lace.rotation.x=Math.PI/2; lace.position.set((-38+i*9)*sc*0.9+0.2,(c.bot-(c.up[8][1]+8+i*3.3))*sc+0.55,0); g.add(lace);
+  }
+  return g;
+}
+
+function buildBox(key){
+  const v=state.vars[key], c=COLS[key];
+  const box={key, group:new THREE.Group(), cur:{lid:0,flap:0,front:0,lacre:1,y:0}, tgt:{lid:0,flap:0,front:0,lacre:1,y:0}};
+  const g=box.group;
+  const kraftTex=(cv)=>M({map:tex(cv)});
+  // fundo
+  const bottom=slab(L,T,W,{2:M({color:INNER}),3:M({color:KRAFT})}); bottom.position.set(0,T/2,0); g.add(bottom);
+  // traseira, laterais
+  const back=slab(L,H,T,{5:kraftTex(backCanvas()),4:M({color:INNER})}); back.position.set(0,H/2,-W/2+T/2); g.add(back);
+  const sc=sideCanvas(key);
+  const left=slab(T,H,W,{1:kraftTex(sc),0:M({color:INNER})}); left.position.set(-L/2+T/2,H/2,0); g.add(left);
+  const right=slab(T,H,W,{0:kraftTex(sc),1:M({color:INNER})}); right.position.set(L/2-T/2,H/2,0); g.add(right);
+  // QR por dentro
+  const qrTex=new THREE.TextureLoader().load(QR_SRC);
+  const qr=new THREE.Mesh(new THREE.PlaneGeometry(4.6,4.6),M({map:qrTex,roughness:.6})); qr.position.set(10,6.2,-W/2+T+0.03); g.add(qr);
+  // frente baixa (dobradiça embaixo)
+  box.front=new THREE.Group(); box.front.position.set(0,0,W/2); g.add(box.front);
+  const fr=slab(L,HF,T,{4:kraftTex(frontCanvas(key)),5:M({color:INNER})}); fr.position.set(0,HF/2,-T/2); box.front.add(fr);
+  // tênis (par)
+  const s1=makeShoe(key); s1.position.set(0,T,4.6); g.add(s1);
+  const s2=makeShoe(key); s2.rotation.y=Math.PI; s2.position.set(0,T,-4.6); g.add(s2);
+  // tampa (dobradiça na traseira)
+  box.lid=new THREE.Group(); box.lid.position.set(0,H,-W/2-G); g.add(box.lid);
+  const lw=L+2*G, ld=W+2*G;
+  const top=slab(lw,T,ld,{2:M({map:tex(lidTopCanvas(key,v))}),3:M({color:INNER})}); top.position.set(0,T/2,ld/2); box.lid.add(top);
+  // laterais da tampa
+  [-1,1].forEach(sd=>{
+    const face={}; face[sd>0?0:1]=M({map:tileTex(key,v,ld,FL)}); face[sd>0?1:0]=M({color:INNER});
+    const f=slab(T,FL,ld,face); f.position.set(sd*(lw/2+T/2),T-FL/2,ld/2); box.lid.add(f);
+  });
+  // aba da frente com janela (dobradiça na borda da tampa)
+  box.flap=new THREE.Group(); box.flap.position.set(0,T,ld+T/2); box.lid.add(box.flap);
+  const wx=12, wTop=1.5, wBot=5.5;
+  const strip=(x0,x1,y0,y1)=>{ const w=x1-x0, h=y1-y0;
+    const m=slab(w,h,T,{4:M({map:tileTex(key,v,w,h,x0+lw/2,FL+y0)}),5:M({color:INNER})});
+    m.position.set((x0+x1)/2,(y0+y1)/2,0); box.flap.add(m); };
+  strip(-lw/2,lw/2,-wTop,0); strip(-lw/2,lw/2,-FL,-wBot); strip(-lw/2,-wx,-wBot,-wTop); strip(wx,lw/2,-wBot,-wTop);
+  const film=new THREE.Mesh(new THREE.PlaneGeometry(2*wx,wBot-wTop),new THREE.MeshStandardMaterial({color:"#ffffff",transparent:true,opacity:.14,roughness:.1,depthWrite:false}));
+  film.position.set(0,-(wTop+wBot)/2,-T/2+0.02); box.flap.add(film);
+  const nm=new THREE.Mesh(new THREE.PlaneGeometry(lw,2),new THREE.MeshBasicMaterial({map:tex(nameCanvas(key)),transparent:true}));
+  nm.position.set(0,-FL+1.0,T/2+0.03); box.flap.add(nm);
+  // lacre
+  box.lacre=new THREE.Mesh(new THREE.PlaneGeometry(1.5,2.4),M({color:key==="casual"?"#C9F24B":"#2338C9",roughness:.5}));
+  box.lacre.position.set(0,H-FL+0.2,W/2+G+T+0.06); g.add(box.lacre);
+  return box;
+}
+
+function placeTargets(){
+  const sel=state.col, others=KEYS.filter(k=>k!==sel), step=state.step, gap=H+T+0.35;
+  KEYS.forEach(k=>{
+    const b=boxes[k], t=b.tgt;
+    if(step<3){
+      if(k===sel){ t.y=0; t.lid=step===1?-1.95:0; t.flap=step===2?-1.72:0; t.front=step===2?1.48:0; t.lacre=step===0?1:0; }
+      else { t.y=60; t.lid=0; t.flap=0; t.front=0; t.lacre=0; }
+    } else {
+      const lvl = k===sel?1:(k===others[0]?0:2);
+      t.y=lvl*gap; t.lacre=0;
+      t.lid = lvl===2?-1.95:0;
+      t.flap = lvl===1?-1.42:0; t.front = lvl===1?1.48:0;
+      if(!b.group.visible){ b.group.visible=true; b.cur.y=70+lvl*14; }
+    }
+  });
+  camAnim={t:0, from:camera.position.clone(), fromT:controls.target.clone(), ...camFor(step)};
+}
+let camAnim=null;
+function camFor(step){
+  const narrow = renderer.domElement.clientWidth < renderer.domElement.clientHeight*1.05;
+  const f = narrow?1.18:1;
+  if(step===3) return {to:new THREE.Vector3(64*f,50*f,84*f), toT:new THREE.Vector3(0,19,0)};
+  if(step===1) return {to:new THREE.Vector3(40*f,40*f,58*f), toT:new THREE.Vector3(0,8,-2)};
+  return {to:new THREE.Vector3(40*f,27*f,62*f), toT:new THREE.Vector3(0,6,0)};
+}
+
+function rebuild(key){
+  const old=boxes[key]; const nb=buildBox(key);
+  if(old){ nb.cur={...old.cur}; nb.tgt={...old.tgt}; nb.group.visible=old.group.visible; scene.remove(old.group); }
+  boxes[key]=nb; scene.add(nb.group); apply(nb);
+}
+function apply(b){
+  b.group.position.y=b.cur.y; b.lid.rotation.x=b.cur.lid; b.flap.rotation.x=b.cur.flap; b.front.rotation.x=b.cur.front;
+  const s=Math.max(0.001,b.cur.lacre); b.lacre.scale.set(s,s,s); b.lacre.visible=b.cur.lacre>0.02;
+}
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function tick(){
+  const dt=Math.min(clock.getDelta(),0.05), k=reduce?1:1-Math.pow(0.002,dt);
+  KEYS.forEach(key=>{ const b=boxes[key]; if(!b) return;
+    for(const p of ["lid","flap","front","lacre","y"]) b.cur[p]+= (b.tgt[p]-b.cur[p])*k;
+    if(state.step<3 && key!==state.col && b.cur.y>55) b.group.visible=false;
+    apply(b); });
+  if(camAnim){ camAnim.t=Math.min(1,camAnim.t+(reduce?1:dt/0.9)); const e=1-Math.pow(1-camAnim.t,3);
+    camera.position.lerpVectors(camAnim.from,camAnim.to,e); controls.target.lerpVectors(camAnim.fromT,camAnim.toT,e); if(camAnim.t>=1) camAnim=null; }
+  controls.update(); renderer.render(scene,camera); requestAnimationFrame(tick);
+}
+
+function init3d(){
+  const stage=document.getElementById("stage");
+  try{ renderer=new THREE.WebGLRenderer({antialias:true, preserveDrawingBuffer:true}); }catch(e){ document.getElementById("nogl").hidden=false; return false; }
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  stage.prepend(renderer.domElement);
+  scene=new THREE.Scene(); scene.background=new THREE.Color("#EFE7DA");
+  camera=new THREE.PerspectiveCamera(32,1,1,1000); camera.position.set(38,26,56);
+  controls=new THREE.OrbitControls(camera,renderer.domElement); controls.target.set(0,6,0);
+  controls.enableDamping=true; controls.minDistance=25; controls.maxDistance=220; controls.maxPolarAngle=Math.PI*0.49; controls.enablePan=false;
+  controls.addEventListener("start",()=>{ camAnim=null; });
+  scene.add(new THREE.HemisphereLight("#FFFFFF","#C9B595",0.62));
+  const sun=new THREE.DirectionalLight("#FFFFFF",0.58); sun.position.set(30,70,45); sun.castShadow=true;
+  sun.shadow.mapSize.set(2048,2048); Object.assign(sun.shadow.camera,{left:-60,right:60,top:70,bottom:-40,near:1,far:200}); sun.shadow.bias=-0.0005; scene.add(sun);
+  const fill=new THREE.DirectionalLight("#FFF4E6",0.22); fill.position.set(-40,20,-10); scene.add(fill);
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(400,400),new THREE.ShadowMaterial({opacity:.16})); floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; scene.add(floor);
+  const resize=()=>{ const w=stage.clientWidth, h=stage.clientHeight; renderer.setSize(w,h,false); camera.aspect=w/Math.max(h,1); camera.updateProjectionMatrix(); };
+  new ResizeObserver(resize).observe(stage); resize();
+  KEYS.forEach(k=>rebuild(k));
+  clock=new THREE.Clock(); placeTargets(); camAnim=null; const cf=camFor(0); camera.position.copy(cf.to); controls.target.copy(cf.toT);
+  KEYS.forEach(k=>{ const b=boxes[k]; b.cur={...b.tgt}; b.group.visible = k===state.col; apply(b); });
+  tick(); return true;
+}
+
+/* ---------- painel ---------- */
+const $=id=>document.getElementById(id);
+function renderPanel(){
+  const c=COLS[state.col];
+  document.documentElement.style.setProperty("--acc",c.acc); document.documentElement.style.setProperty("--accInk",c.accInk);
+  $("cols").innerHTML=KEYS.map(k=>`<button class="opt" type="button" id="col-${k}" data-col="${k}" aria-pressed="${k===state.col}"><span class="dot" style="background:${COLS[k].acc}"></span><b>${COLS[k].nome}</b><small>${COLS[k].tenis}</small></button>`).join("");
+  $("vars").innerHTML=c.est.map((e,i)=>`<button class="opt" type="button" id="var-${i}" data-var="${i}" aria-pressed="${i===state.vars[state.col]}"><img alt="" src="${swatch(state.col,i)}"><b>${e[0]}</b><small>${e[1]}</small></button>`).join("");
+  $("steps").innerHTML=STATES.map((s,i)=>`<button class="step" type="button" id="step-${i}" data-step="${i}" aria-pressed="${i===state.step}"><i>${i+1}</i><span>${s.n}</span></button>`).join("");
+  $("cap").innerHTML=`<b>${STATES[state.step].n}</b>${STATES[state.step].d}`;
+  $("tagState").textContent=STATES[state.step].n; $("tagCol").textContent=`Coleção ${c.nome}, estampa ${c.est[state.vars[state.col]][0]}`;
+  $("play").textContent=state.playing?"Pausar apresentação":"Apresentar em sequência";
+}
+let timer=null;
+function setStep(i){ state.step=i; renderPanel(); if(renderer) placeTargets(); }
+function stopPlay(){ state.playing=false; clearInterval(timer); timer=null; }
+document.addEventListener("click",e=>{
+  const col=e.target.closest("[data-col]"), vr=e.target.closest("[data-var]"), st=e.target.closest("[data-step]");
+  if(col){ const prev=state.col; state.col=col.dataset.col; renderPanel(); if(renderer){ if(state.step<3){ boxes[state.col].group.visible=true; boxes[state.col].cur.y=0; boxes[prev].tgt.y=60; } placeTargets(); } }
+  if(vr){ state.vars[state.col]=+vr.dataset.var; renderPanel(); if(renderer) rebuild(state.col); }
+  if(st){ stopPlay(); setStep(+st.dataset.step); }
+  if(e.target.closest("#play")){
+    if(state.playing){ stopPlay(); renderPanel(); }
+    else { state.playing=true; setStep((state.step+1)%4); timer=setInterval(()=>setStep((state.step+1)%4),3200); }
+  }
+});
+window.encaixe={ set(col,v,step){ stopPlay(); if(col) state.col=col; if(v!=null) state.vars[state.col]=v; if(renderer){ rebuild(state.col); KEYS.forEach(k=>{ boxes[k].group.visible = step===3 || k===state.col; }); } setStep(step||0); if(renderer){ KEYS.forEach(k=>{ const b=boxes[k]; b.cur={...b.tgt}; apply(b); }); if(camAnim){ camera.position.copy(camAnim.to); controls.target.copy(camAnim.toT); camAnim=null; } } } };
+
+// A página de fora troca a coleção quando a pessoa escolhe outro par, e recebe a altura no celular
+addEventListener("message",e=>{
+  const d=e.data||{};
+  if(d.type==="encaixe-col" && COLS[d.col] && d.col!==state.col){ const b=document.getElementById("col-"+d.col); if(b) b.click(); }
+});
+if(document.documentElement.classList.contains("embed") && parent!==window){
+  const panel=document.getElementById("panel"), narrow=matchMedia("(max-width:760px)");
+  // celular: altura da página inteira; computador: altura que o painel precisa para não rolar por dentro
+  const post=()=>parent.postMessage({type:"encaixe-3d-height",h:narrow.matches?document.documentElement.scrollHeight:[...panel.children].reduce((t,el)=>t+el.offsetHeight,0)+20*(panel.children.length-1)+40},"*");
+  new ResizeObserver(post).observe(document.body); new ResizeObserver(post).observe(panel); addEventListener("load",post);
+}
+renderPanel();
+const go=()=>{ if(typeof THREE==="undefined"){ $("nogl").hidden=false; return; } init3d(); };
+(document.fonts && document.fonts.ready ? Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1500))]) : Promise.resolve()).then(()=>{ Object.keys(tileCache).forEach(k=>delete tileCache[k]); renderPanel(); go(); });
+</script>
+</body>
+</html>
