@@ -34,11 +34,22 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);f
 .skip:focus{left:16px}
 
 /* Tampa (hero) */
-header.lid{background:var(--kraft);color:#1B1A17;padding-block:20px 32px}
-.brandrow{display:flex;align-items:center;gap:10px;justify-content:space-between}
-.logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;letter-spacing:.04em;font-size:20px}
-.collab{font-family:var(--display);font-size:13px;font-weight:500;letter-spacing:.02em}
-h1{font-family:var(--display);font-weight:700;font-size:clamp(26px,6.6vw,40px);line-height:1.1;margin:24px 0 10px;text-wrap:balance}
+header.lid{background:var(--kraft);color:#1B1A17;padding-block:4px 32px}
+/* Barra fixa: mesma cor da tampa, para parecer a borda da caixa */
+html{scroll-padding-top:72px}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+.topbar{position:sticky;top:0;z-index:5;background:var(--kraft);color:#1B1A17;border-bottom:1px solid rgba(27,26,23,.14)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;letter-spacing:.04em;font-size:18px;color:#1B1A17;text-decoration:none;min-height:44px;flex:none}
+.logo svg{width:26px;height:26px}
+.collab{font-weight:500;font-size:13px;letter-spacing:.02em}
+.navlinks{list-style:none;margin:0;padding:0;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.navlinks a{display:flex;align-items:center;min-height:44px;padding:0 10px;border-radius:8px;color:#1B1A17;text-decoration:none;font-size:15px;font-weight:500;white-space:nowrap}
+.navlinks a:hover{background:rgba(27,26,23,.08)}
+.navlinks a[aria-current="true"]{font-weight:600;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:6px}
+.logo:focus-visible,.navlinks a:focus-visible{outline:3px solid #2338C9;outline-offset:-2px}
+@media (max-width:520px){.logo span{display:none}.navlinks a{padding:0 8px;font-size:14px}}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(26px,6.6vw,40px);line-height:1.1;margin:20px 0 10px;text-wrap:balance}
 .lid p{margin:0;max-width:38ch;font-size:17px}
 .herocta{display:inline-flex;align-items:center;min-height:44px;margin-top:18px;padding:0 18px;border-radius:10px;background:#1B1A17;color:#F7F1E7;font-weight:600;text-decoration:none}
 .herocta:focus-visible{outline:3px solid var(--cobalt);outline-offset:3px}
@@ -109,6 +120,11 @@ ul.pieces li.shoe{color:var(--muted)}
 .care div:last-child{border-bottom:1px solid var(--line)}
 .care dt{font-weight:600}.care dd{margin:0;color:var(--muted)}
 
+.frame{border:1.5px solid var(--line);border-radius:14px;overflow:hidden;background:#EFE7DA}
+.frame iframe{display:block;width:100%;height:960px;border:0}
+.fulllink{display:inline-flex;align-items:center;min-height:44px;color:var(--ink);font-weight:600;text-underline-offset:3px}
+.fulllink:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px;border-radius:6px}
+
 footer{padding-block:36px 48px;color:var(--muted);font-size:13px;max-width:70ch}
 
 .toast{position:fixed;left:50%;bottom:max(20px, env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);opacity:0;background:var(--ink);color:var(--paper);padding:12px 18px;border-radius:12px;font-size:15px;font-weight:500;pointer-events:none;transition:opacity .2s var(--ease),transform .2s var(--ease);box-shadow:0 10px 24px -10px rgba(0,0,0,.45)}
@@ -117,9 +133,9 @@ footer{padding-block:36px 48px;color:var(--muted);font-size:13px;max-width:70ch}
 @media (max-width:380px){.care div{grid-template-columns:1fr;gap:2px}}
 @media (min-width:900px){
   .wrap{max-width:1080px;padding-left:32px;padding-right:32px}
-  header.lid{padding-block:28px 56px}
+  header.lid{padding-block:12px 56px}
   .hero{display:grid;grid-template-columns:1fr 1.05fr;column-gap:56px;align-items:center}
-  .hero .brandrow{grid-column:1 / -1}
+  .frame iframe{height:640px}
   .hero .box{margin-top:32px}
   .pairs{max-width:620px}
   .looks{grid-template-columns:1fr 1fr}
@@ -135,15 +151,23 @@ footer{padding-block:36px 48px;color:var(--muted);font-size:13px;max-width:70ch}
 <body>
 <a class="skip" href="#looks-title">Pular para os looks</a>
 
-<header class="lid">
+<nav class="topbar" aria-label="Seções">
+  <div class="wrap bar">
+    <a class="logo" href="#topo" aria-label="ENCAIXE × Nike, voltar ao início">
+      <svg viewBox="0 0 30 30" aria-hidden="true"><path d="M27 3H4v24h23M4 15h23" fill="none" stroke="#1B1A17" stroke-width="4.2"/><rect x="22" y="10.7" width="5" height="2.2" fill="#1B1A17"/><rect x="22" y="22.7" width="5" height="2.2" fill="#1B1A17"/></svg>
+      <span>ENCAIXE <span class="collab">× Nike</span></span>
+    </a>
+    <ul class="navlinks">
+      <li><a href="#pares">Looks</a></li>
+      <li><a href="#caixa-3d">Caixa 3D</a></li>
+      <li><a href="#como-usar">Como usar</a></li>
+      <li><a href="#cuidados">Cuidados</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="lid" id="topo">
   <div class="wrap hero">
-    <div class="brandrow">
-      <div class="logo">
-        <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path d="M27 3H4v24h23M4 15h23" fill="none" stroke="#1B1A17" stroke-width="4.2"/><rect x="22" y="10.7" width="5" height="2.2" fill="#1B1A17"/><rect x="22" y="22.7" width="5" height="2.2" fill="#1B1A17"/></svg>
-        ENCAIXE
-      </div>
-      <div class="collab">× Nike</div>
-    </div>
     <div>
       <h1>Seu par chegou. Agora ele tem casa e tem look.</h1>
       <p>Três tênis, três caixas: escolha a sua coleção e veja combinações para cada momento do dia.</p>
@@ -158,7 +182,7 @@ footer{padding-block:36px 48px;color:var(--muted);font-size:13px;max-width:70ch}
 </header>
 
 <main class="wrap">
-  <section aria-labelledby="looks-title">
+  <section id="pares" aria-labelledby="looks-title">
     <h2 id="looks-title" tabindex="-1">Qual é o seu par?</h2>
     <p class="sub">Cada coleção tem a sua caixa: faixa verde-limão no esportivo, rosa no skate e azul no casual.</p>
     <div class="pairs" id="pairs" role="group" aria-label="Coleção"></div>
@@ -167,8 +191,15 @@ footer{padding-block:36px 48px;color:var(--muted);font-size:13px;max-width:70ch}
     <div class="looks" id="looks"></div>
   </section>
 
+  <section id="caixa-3d" aria-labelledby="t-3d">
+    <h2 id="t-3d">A caixa em 3D</h2>
+    <p class="sub">Gire a caixa, troque a estampa e veja ela abrir pela tampa, pela frente e virar sapateira. Medidas reais: 32 × 20 × 12 cm.</p>
+    <div class="frame"><iframe id="frame3d" src="caixa-3d.html?embed=1" title="Caixa ENCAIXE em 3D" loading="lazy"></iframe></div>
+    <a class="fulllink" href="caixa-3d.html">Abrir a caixa 3D em tela cheia</a>
+  </section>
+
   <div class="more">
-    <section aria-labelledby="t-sap">
+    <section id="como-usar" aria-labelledby="t-sap">
       <h2 id="t-sap">Sua caixa já é sapateira</h2>
       <p class="sub">A caixa ENCAIXE não vai para o lixo: foi feita para ficar com você.</p>
       <ol class="steps">
@@ -179,7 +210,7 @@ footer{padding-block:36px 48px;color:var(--muted);font-size:13px;max-width:70ch}
       </ol>
     </section>
 
-    <section aria-labelledby="t-care">
+    <section id="cuidados" aria-labelledby="t-care">
       <h2 id="t-care">Cuide do par</h2>
       <p class="sub">Dicas rápidas para o tênis durar mais na sapateira.</p>
       <dl class="care">
@@ -256,7 +287,7 @@ function toast(msg){
 }
 document.addEventListener("click", e => {
   const p = e.target.closest(".pair"), c = e.target.closest(".chip"), s = e.target.closest(".save");
-  if(p && p.dataset.k!==state.pair){ state.pair=p.dataset.k; if(state.occ==="salvos") state.occ="todos"; renderPairs(); renderChips(); renderHero(true); renderLooks(); }
+  if(p && p.dataset.k!==state.pair){ state.pair=p.dataset.k; if(state.occ==="salvos") state.occ="todos"; renderPairs(); renderChips(); renderHero(true); renderLooks(); syncFrame(); }
   if(c){ state.occ=c.dataset.k; renderChips(); renderLooks(); }
   if(e.target.closest("#see-all")){ state.occ="todos"; renderChips(); renderLooks(); }
   if(s){ const i=+s.dataset.i, had = state.saved.includes(i);
@@ -265,6 +296,21 @@ document.addEventListener("click", e => {
     renderChips(); renderLooks(); toast(had ? "Look removido dos salvos" : "Look salvo");
     const again = document.getElementById(`save-${i}`); (again || document.getElementById("occ-salvos")).focus(); }
 });
+const frame = document.getElementById("frame3d");
+function syncFrame(){ try{ frame.contentWindow.postMessage({type:"encaixe-col", col:state.pair}, "*"); }catch(err){} }
+frame.addEventListener("load", syncFrame);
+addEventListener("message", e => {
+  if(e.source!==frame.contentWindow || !e.data || e.data.type!=="encaixe-3d-height") return;
+  frame.style.height = Math.max(frame.clientWidth<=760 ? 0 : 560, Math.ceil(e.data.h))+"px";
+});
+const links = [...document.querySelectorAll(".navlinks a")];
+if("IntersectionObserver" in window){
+  const seen = new IntersectionObserver(entries => entries.forEach(en => {
+    if(!en.isIntersecting) return;
+    links.forEach(a => a.setAttribute("aria-current", a.getAttribute("href")==="#"+en.target.id ? "true" : "false"));
+  }), {rootMargin:"-45% 0px -50% 0px"});
+  ["pares","caixa-3d","como-usar","cuidados"].forEach(id => seen.observe(document.getElementById(id)));
+}
 renderHero(false); renderPairs(); renderChips(); renderLooks();
 </script>
 
