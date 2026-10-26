@@ -109,21 +109,33 @@ button:focus-visible{outline:3px solid #2338C9;outline-offset:2px}
 <script>
 const QR_SRC = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQgAAAEICAIAAAAslP2oAAAFBElEQVR4nO3dUYocNxRA0UzwIgLJ/leWgHfR+Q7cwgj0kCpzzrddXdOei6CeVfr6fD6/Af/1++kbgBsJA4IwIAgDgjAgCAOCMCAIA4IwIAgDgjAgCAOCMCAIA4IwIPxY/Qt//fnHxH1s9/c/P7dc5+nnfbr+6vezep9vuZ/brP5cVgwIwoAgDAjCgCAMCMKAIAwIy3OMJ7vmBqt2PUffdZ3VecKuOcP0vGLV238frBgQhAFBGBCEAUEYEIQBQRgQts0xnkzPB3aZnj+sfu6Tt8893vL7YMWAIAwIwoAgDAjCgCAMCMKAMD7HeLvVOcCp/RhP3vLep9tYMSAIA4IwIAgDgjAgCAOCMCCYY/zC6rxil13zk1Pvd3o7KwYEYUAQBgRhQBAGBGFAEAaE8TnGbc/Rp/cnTF9/en/I6ueuuu334YkVA4IwIAgDgjAgCAOCMCAIA8K2Ocbb31+063n/9PV3zSumf963/z5YMSAIA4IwIAgDgjAgCAOCMCB8fT6f0/fwre16b9Vb9mO8hRUDgjAgCAOCMCAIA4IwIAgDwvIc4+3P3U+dq33qOruuP/3nb2PFgCAMCMKAIAwIwoAgDAjCgHDsnO/p59+n5hWrpq8zff73bXObXdexYkAQBgRhQBAGBGFAEAYEYUDY9l6p2/ZXnJpLPJmeG+xy2/e2atf3bMWAIAwIwoAgDAjCgCAMCMKAsLwf47Zzo6fnG9PP9d+yb+TJ9HuiTs1JrBgQhAFBGBCEAUEYEIQBQRgQjp3zfdv/41916lyIt8w93nJeyhMrBgRhQBAGBGFAEAYEYUAQBoTx/Ri7nHouftu8Ytdz/ek5wKrpfTKrrBgQhAFBGBCEAUEYEIQBQRgQtp3zveuc6enn8btMP0d/cmq/xLTb3n9lxYAgDAjCgCAMCMKAIAwIwoAw/l6p2/7f/6nzPVZN389t56/fth/GigFBGBCEAUEYEIQBQRgQhAHh2H6M6c+d9vZzzW87j+K2/SFWDAjCgCAMCMKAIAwIwoAgDAj2Y/zC9Lkcu65z2/niT6bvf9d1rBgQhAFBGBCEAUEYEIQBQRgQlucYb3kv05Pb5gC37UN48t3mUVYMCMKAIAwIwoAgDAjCgCAMCMvvlZp+X9Bbnvffdp/T9zN9Lvtt/75WDAjCgCAMCMKAIAwIwoAgDAjLc4zb9mPctk9g9XNvO7d7l1PnhOxixYAgDAjCgCAMCMKAIAwIwoAwfj7GbabnBqufe9v+jSen3q916t/LigFBGBCEAUEYEIQBQRgQhAFh236M2zw9t77t/UWnzrd+y3uiTp1nYsWAIAwIwoAgDAjCgCAMCMKAsDzHePKWfQXT+xB2XX/XXGLa9D6NU6wYEIQBQRgQhAFBGBCEAUEYELbNMZ6cei/Q6nWmn6NP7yuY3p9w6vtZtet7sGJAEAYEYUAQBgRhQBAGBGFAGJ9j3GZ6/8b0df6vbpt3WTEgCAOCMCAIA4IwIAgDgjAgfLs5xvQ+h9v2RZw6z/vJ9LzCfgwYJAwIwoAgDAjCgCAMCMKAMD7HuO1c7SfT84fVz30y/V6s6bnNbe+PemLFgCAMCMKAIAwIwoAgDAjCgLBtjvGW9yadek/UqXnFrv0nu+Ybq07NwawYEIQBQRgQhAFBGBCEAUEYEL4+n8/pe4DrWDEgCAOCMCAIA4IwIAgDgjAgCAOCMCAIA4IwIAgDgjAgCAOCMCD8C0RnH22d1DNMAAAAAElFTkSuQmCC";
 const COLS = {
-  esportivo:{nome:"Esportivo", tenis:"Preto Volt", acc:"#C9F24B", accInk:"#1B1A17", upper:"#2A2A2F", sole:"#F1F1EC", outsole:"#C9F24B", detail:"#C9F24B",
-    est:[["Listras","Faixas diagonais de velocidade"],["Pista","Raias de corrida em verde-limão"]],
-    up:[[18,70],[15,52],[18,34],[30,25],[44,24],[52,31],[62,30],[70,20],[80,16],[88,19],[100,31],[130,45],[170,51],[196,55],[206,61],[204,70]],
-    so:[[10,70],[206,68],[211,72],[206,80],[176,84],[14,84],[9,78]], bot:84,
-    dec:[[[56,64],[98,42],[110,48],[72,66]],[[120,58],[150,50],[156,54],[128,62]]]},
+  esportivo:{nome:"Esportivo", tenis:"Preto Volt", acc:"#C9F24B", accInk:"#1B1A17", upper:"#26272C", sole:"#C9F24B", outsole:"#141416", detail:"#C9F24B",
+    est:[["Velocidade","Rastros de luz de quem passa correndo"],["Trilha","Curvas de nível de um mapa de trail run"]],
+    // silhuetas no mesmo desenho 220x100 do site (bico à direita, chão em bot)
+    up:[[15,59],[11,46],[13,32],[17,24],[13,11],[17,8],[29,21],[40,28],[51,30],[60,26],[66,18],[72,17],[82,26],[104,37],[130,48],[156,53],[180,56],[200,59],[207,62],[180,65.5],[152,65],[24,59]],
+    so:[[6,56],[4,66],[8,79],[20,86],[48,87],[150,86],[180,84],[200,76],[211,66],[207,62],[180,65.5],[152,65],[24,59]], soSpline:true,
+    out:[[10,80],[18,88],[40,90],[150,89],[180,87],[200,80],[212,68],[209,66],[196,78],[176,84],[150,85],[40,86],[20,85]],
+    bot:90, lace:"#F1F1EC", laces:[[90,33],[103,38.5],[116,43],[129,46.5]],
+    dec:[[[44,49],[70,51],[96,49],[120,42],[121,44.5],[96,51.5],[70,53.5],[44,51.5]],[[13,11],[17,8],[29,21],[21,24]]]},
   skate:{nome:"Skate", tenis:"Camurça Rosa", acc:"#FF5FA2", accInk:"#1B1A17", upper:"#C9AE86", sole:"#F4EEE2", outsole:"#B9773A", detail:"#FF5FA2",
-    est:[["Lixa","Os pontos da lixa do shape"],["Xadrez","O quadriculado clássico do skate"]],
-    up:[[14,72],[10,52],[16,33],[32,27],[46,26],[56,32],[62,34],[68,22],[78,15],[92,16],[100,22],[106,28],[132,44],[172,50],[198,54],[208,57],[212,63],[210,72]],
-    so:[[9,70],[212,70],[213,80],[210,87],[11,87],[8,80]], bot:87,
-    dec:[[[66,50],[124,50],[128,64],[62,64]]]},
-  casual:{nome:"Casual", tenis:"Branco Cobalto", acc:"#2338C9", accInk:"#FFFFFF", upper:"#F6F5F1", sole:"#FFFFFF", outsole:"#CFCBC2", detail:"#2338C9",
-    est:[["Risca fina","Limpa e clássica"],["Monograma","O E da ENCAIXE repetido"]],
-    up:[[14,72],[11,53],[18,35],[32,30],[44,29],[52,34],[58,37],[64,29],[72,21],[82,20],[92,21],[98,27],[104,33],[130,47],[170,53],[196,56],[206,59],[210,65],[208,72]],
-    so:[[10,70],[210,70],[212,77],[208,84],[12,84],[8,77]], bot:84,
-    dec:[[[58,64],[136,64],[136,68],[58,68]],[[14,40],[23,40],[23,62],[14,62]]]}
+    est:[["Grip rasgado","A lixa preta do shape com rasgos rosa"],["Adesivos","Adesivos colados uns por cima dos outros"]],
+    up:[[14,69],[11,57],[12,44],[17,36],[24,30.5],[31,31],[43,36.5],[54,38],[60,35],[62,32],[90,30],[110,40],[136,48],[162,52],[186,55],[202,57],[207,63],[208,69]],
+    so:[[9,69],[206,68],[211,69],[213,74],[213,80],[8,80],[8,72]],
+    out:[[8,80],[213,80],[212,85],[208,90],[16,90],[9,87]],
+    tongue:[[59,34],[57,20],[64,9],[76,8],[88,7],[94,17],[92,29],[88,38]],
+    bot:90, lace:"#F4EEE2", laces:[[94,40],[107,45],[120,49],[133,52.5]],
+    dec:[[[14,69],[11,57],[12,44],[17,36],[25,31],[27,40],[29,50],[33,57],[40,62.5],[52,65],[52,69]],
+         [[52,69],[52,65],[80,65],[124,64],[144,63],[156,60],[166,55],[186,56],[201,58],[207,63],[208,69]],
+         [[62,32],[90,30],[110,40],[136,48],[160,52],[155,59],[132,55],[106,47],[88,38],[69,40],[62,38]],
+         [[66,13],[77,9],[78,19],[67,21]]]},
+  casual:{nome:"Casual", tenis:"Branco Cobalto", acc:"#2338C9", accInk:"#FFFFFF", upper:"#F6F5F1", sole:"#FFFFFF", outsole:"#2338C9", detail:"#2338C9",
+    est:[["Quadras","Quadras de tênis vistas de cima"],["Perfuros","Os furinhos da biqueira em degradê"]],
+    up:[[13,71],[10,59],[11,46],[17,39],[24,34.5],[33,35],[44,38.5],[56,40],[62,37],[64,34],[70,29],[75,29],[82,33],[88,37],[110,47],[138,54],[166,57],[188,59],[203,62],[207,67],[208,71]],
+    so:[[9,71],[207,70],[211,71],[213,77],[212,85],[209,89],[16,90],[10,89],[8,84],[8,74]],
+    out:[[9,86.5],[212.3,86.5],[211,88.5],[205,89.6],[16,89.6],[11,88.5]],
+    tongue:[[64,34],[66,30],[71,28],[75,29],[80,31],[84,36],[70,38]],
+    bot:90, lace:"#FFFFFF", laces:[[96,44],[109,49],[122,53],[135,56]],
+    dec:[[[12,50],[13,44],[17,39],[23,38],[22,48],[23,60],[26,71],[13,71],[11,64]],[[68,30.5],[75.5,30],[77,34],[69.5,35]]]}
 };
 const KEYS = ["esportivo","skate","casual"];
 const STATES = [
@@ -144,30 +156,125 @@ function logoPath(ctx, x, y, s, color){
   ctx.beginPath(); ctx.moveTo(27,3); ctx.lineTo(4,3); ctx.lineTo(4,27); ctx.lineTo(27,27); ctx.moveTo(4,15); ctx.lineTo(27,15); ctx.stroke();
   ctx.fillRect(22,10.7,5,2.2); ctx.fillRect(22,22.7,5,2.2); ctx.restore();
 }
-function pattern(ctx, w, h, key, v){
-  const c = COLS[key];
-  ctx.save();
-  if(key==="esportivo" && v===0){
-    ctx.fillStyle=c.acc; ctx.fillRect(0,0,w,h); ctx.fillStyle="rgba(27,26,23,.88)";
-    for(let i=-h-2;i<w+h+2;i+=2){ ctx.beginPath(); ctx.moveTo(i,h); ctx.lineTo(i+0.55,h); ctx.lineTo(i+0.55+h,0); ctx.lineTo(i+h,0); ctx.fill(); }
-  } else if(key==="esportivo"){
-    ctx.fillStyle="#1B1A17"; ctx.fillRect(0,0,w,h); ctx.strokeStyle=c.acc; ctx.lineWidth=0.12;
-    for(let y=0.5;y<h+1;y+=1){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
-    ctx.strokeStyle="rgba(241,241,236,.55)"; ctx.lineWidth=0.06; ctx.setLineDash([0.3,0.3]);
-    for(let y=1;y<h+1;y+=2){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
-  } else if(key==="skate" && v===0){
-    ctx.fillStyle=c.acc; ctx.fillRect(0,0,w,h); ctx.fillStyle="#C93E7E";
-    for(let r=0, y=0.5; y<h+1; y+=1, r++) for(let x=(r%2?0.5:0); x<w+1; x+=1){ ctx.beginPath(); ctx.arc(x,y,0.17,0,Math.PI*2); ctx.fill(); }
-  } else if(key==="skate"){
-    for(let y=0;y<h;y+=1) for(let x=0;x<w;x+=1){ ctx.fillStyle=((x+y)%2===0)?c.acc:"#1B1A17"; ctx.fillRect(x,y,1,1); }
-  } else if(key==="casual" && v===0){
-    ctx.fillStyle=c.acc; ctx.fillRect(0,0,w,h); ctx.strokeStyle="rgba(255,255,255,.55)"; ctx.lineWidth=0.05;
-    for(let x=0.4;x<w+1;x+=0.8){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
-  } else {
-    ctx.fillStyle=c.acc; ctx.fillRect(0,0,w,h);
-    for(let r=0,y=0.5;y<h+1;y+=2,r++) for(let x=(r%2?1.5:0.5);x<w+1;x+=2) logoPath(ctx,x-0.5,y-0.5,1.0,"#5367E6");
+/* Cada estampa é um ladrilho de TILE×TILE cm que se repete sem costura: o que passa da borda
+   é desenhado de novo do outro lado (wrap). A tampa e os swatches usam o mesmo ladrilho. */
+const T_ = TILE, K = Math.PI*2/TILE;
+function rng(seed){ return ()=>{ seed=(seed*1664525+1013904223)>>>0; return seed/4294967296; }; }
+function wrap(ctx, draw){ for(const dx of [-T_,0,T_]) for(const dy of [-T_,0,T_]){ ctx.save(); ctx.translate(dx,dy); draw(); ctx.restore(); } }
+
+// Esportivo 1: rastros de velocidade, grossos na frente e sumindo para trás
+function tileVelocidade(ctx){
+  ctx.fillStyle=INK; ctx.fillRect(0,0,T_,T_);
+  const r=rng(7), cores=["#C9F24B","#C9F24B","#C9F24B","#F1F1EC","#7E9A2B"];
+  for(let y=0.16; y<T_; y+=0.29){
+    const forte=r()<0.22, len=forte?2.6+r()*1.3:0.9+r()*2.4, x=r()*T_, t=forte?0.24+r()*0.08:0.05+Math.pow(r(),2)*0.12, cor=forte?"#C9F24B":cores[Math.floor(r()*cores.length)];
+    if(r()<0.2) continue;
+    wrap(ctx,()=>{
+      const g=ctx.createLinearGradient(x,0,x+len,0); g.addColorStop(0,cor+"00"); g.addColorStop(0.7,cor+"CC"); g.addColorStop(1,cor);
+      ctx.fillStyle=g; ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+len-t/2,y-t/2); ctx.arc(x+len-t/2,y,t/2,-Math.PI/2,Math.PI/2); ctx.lineTo(x,y); ctx.fill();
+    });
   }
-  ctx.restore();
+}
+// Esportivo 2: curvas de nível de trilha (marching squares numa função periódica de 4 cm)
+function tileTrilha(ctx){
+  ctx.fillStyle="#C9F24B"; ctx.fillRect(0,0,T_,T_);
+  const f=(x,y)=>Math.sin(K*x+0.9*Math.sin(K*y))+0.85*Math.cos(K*y+0.8*Math.sin(2*K*x))+0.4*Math.sin(K*(x+y)+1.1);
+  const N=96, s=T_/N, F=[];
+  for(let j=0;j<=N;j++){ F[j]=[]; for(let i=0;i<=N;i++) F[j][i]=f(i*s,j*s); }
+  const lerp=(a,b,l)=>(l-a)/(b-a);
+  for(let n=0, lv=-2.1; lv<2.2; lv+=0.27, n++){
+    ctx.beginPath();
+    for(let j=0;j<N;j++) for(let i=0;i<N;i++){
+      const a=F[j][i], b=F[j][i+1], c=F[j+1][i+1], d=F[j+1][i], p=[];
+      const x=i*s, y=j*s;
+      if((a<lv)!==(b<lv)) p.push([x+lerp(a,b,lv)*s,y]);
+      if((b<lv)!==(c<lv)) p.push([x+s,y+lerp(b,c,lv)*s]);
+      if((d<lv)!==(c<lv)) p.push([x+lerp(d,c,lv)*s,y+s]);
+      if((a<lv)!==(d<lv)) p.push([x,y+lerp(a,d,lv)*s]);
+      for(let k=0;k+1<p.length;k+=2){ ctx.moveTo(p[k][0],p[k][1]); ctx.lineTo(p[k+1][0],p[k+1][1]); }
+    }
+    ctx.strokeStyle=INK; ctx.lineWidth=n%3===0?0.085:0.03; ctx.lineCap="round"; ctx.stroke();
+  }
+}
+// Skate 1: lixa preta do shape com rasgos que mostram o rosa por baixo
+function tileGrip(ctx){
+  ctx.fillStyle="#161514"; ctx.fillRect(0,0,T_,T_);
+  const r=rng(11);
+  for(let i=0;i<2200;i++){ const x=r()*T_, y=r()*T_, q=r(); ctx.fillStyle=q<0.5?"rgba(255,255,255,.10)":q<0.85?"rgba(0,0,0,.55)":"rgba(255,255,255,.22)"; ctx.fillRect(x,y,0.022+r()*0.02,0.022+r()*0.02); }
+  const rasgo=(x0,y0,ang,len,larg,seed)=>{
+    // contorno anguloso (poucos pontos, largura irregular) e uma borda de papel desfiado em volta
+    const rr=rng(seed), n=11, top=[], bot=[];
+    for(let i=0;i<=n;i++){
+      const t=i/n, w=(i===0||i===n)?0:larg*(0.3+0.7*Math.sin(Math.PI*Math.pow(t,0.8)))*(0.55+0.7*rr());
+      const xa=t*len+(i&&i<n?(rr()-0.5)*0.16:0);
+      top.push([xa,-w/2+(rr()-0.5)*0.1]); bot.push([xa,w/2+(rr()-0.5)*0.1]);
+    }
+    const fiapo=(pts,lado)=>{ const o=[]; for(let i=0;i<pts.length-1;i++){ const [x1,y1]=pts[i],[x2,y2]=pts[i+1]; for(let k=0;k<5;k++){ const t=k/5; o.push([x1+(x2-x1)*t, y1+(y2-y1)*t+lado*(0.03+rr()*0.09)]); } } o.push(pts[pts.length-1]); return o; };
+    const top2=fiapo(top,-1), bot2=fiapo(bot,1);
+    wrap(ctx,()=>{
+      ctx.save(); ctx.translate(x0,y0); ctx.rotate(ang);
+      const forma=(a,b)=>{ ctx.beginPath(); a.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y)); b.slice().reverse().forEach(([x,y])=>ctx.lineTo(x,y)); ctx.closePath(); };
+      forma(top2,bot2); ctx.fillStyle="#F4EEE2"; ctx.fill();
+      forma(top,bot); ctx.fillStyle="#FF5FA2"; ctx.fill();
+      ctx.strokeStyle="rgba(150,30,80,.45)"; ctx.lineWidth=0.02; ctx.stroke();
+      ctx.restore();
+    });
+  };
+  rasgo(0.2,1.25,-0.38,3.0,0.7,3); rasgo(1.7,3.2,0.12,1.9,0.42,5); rasgo(3.2,2.3,-1.05,1.3,0.26,9);
+}
+// Skate 2: adesivos colados por cima uns dos outros, com a borda branca do recorte
+function tileAdesivos(ctx){
+  ctx.fillStyle="#FF5FA2"; ctx.fillRect(0,0,T_,T_);
+  const AM="#FFD23F", CR="#F4EEE2";
+  const raio=(ctx)=>{ ctx.beginPath(); [[0.12,-0.62],[-0.34,0.06],[-0.02,0.06],[-0.14,0.62],[0.36,-0.12],[0.04,-0.12],[0.22,-0.62]].forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y)); ctx.closePath(); };
+  const estrela=(ctx,R)=>{ ctx.beginPath(); for(let i=0;i<10;i++){ const a=-Math.PI/2+i*Math.PI/5, rr=i%2?R*0.45:R; ctx.lineTo(Math.cos(a)*rr,Math.sin(a)*rr); } ctx.closePath(); };
+  const roda=(ctx,R)=>{ ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); };
+  const adesivo=(x,y,ang,desenha)=>wrap(ctx,()=>{
+    ctx.save(); ctx.translate(x,y); ctx.rotate(ang); ctx.lineJoin="round";
+    ctx.shadowColor="rgba(27,26,23,.35)"; ctx.shadowOffsetY=3; ctx.shadowBlur=5;
+    desenha(true); ctx.shadowColor="transparent"; desenha(false); ctx.restore();
+  });
+  // borda: o mesmo contorno com traço grosso creme
+  adesivo(0.5,2.1,-0.3,(borda)=>{ if(borda){ ctx.beginPath(); ctx.roundRect(-0.52,-0.36,1.04,0.72,0.14); ctx.fillStyle=CR; ctx.fill(); } else { ctx.beginPath(); ctx.roundRect(-0.44,-0.28,0.88,0.56,0.08); ctx.save(); ctx.clip(); for(let j=0;j<4;j++) for(let i=0;i<6;i++){ ctx.fillStyle=(i+j)%2?INK:AM; ctx.fillRect(-0.44+i*0.147,-0.28+j*0.14,0.148,0.141); } ctx.restore(); } });
+  adesivo(3.5,3.45,0.4,(borda)=>{ estrela(ctx,0.36); if(borda){ ctx.lineWidth=0.14; ctx.strokeStyle=CR; ctx.stroke(); ctx.fillStyle=CR; ctx.fill(); } else { ctx.fillStyle=INK; ctx.fill(); } });
+  adesivo(0.85,0.95,-0.25,(borda)=>{ estrela(ctx,0.7); if(borda){ ctx.lineWidth=0.16; ctx.strokeStyle=CR; ctx.stroke(); ctx.fillStyle=CR; ctx.fill(); } else { ctx.fillStyle=AM; ctx.fill(); ctx.lineWidth=0.04; ctx.strokeStyle=INK; ctx.stroke(); } });
+  adesivo(1.75,0.55,0.32,(borda)=>{ if(borda){ ctx.beginPath(); ctx.roundRect(-0.62,-0.42,1.24,0.84,0.18); ctx.fillStyle=CR; ctx.fill(); } else { ctx.beginPath(); ctx.roundRect(-0.54,-0.34,1.08,0.68,0.12); ctx.fillStyle=INK; ctx.fill(); logoPath(ctx,-0.26,-0.26,0.52,"#FF5FA2"); } });
+  adesivo(3.05,1.55,0.25,(borda)=>{ if(borda){ ctx.save(); ctx.scale(1.35,1.35); raio(ctx); ctx.restore(); ctx.lineWidth=0.16; ctx.strokeStyle=CR; ctx.stroke(); ctx.fillStyle=CR; ctx.fill(); } else { ctx.save(); ctx.scale(1.35,1.35); raio(ctx); ctx.restore(); ctx.fillStyle=INK; ctx.fill(); } });
+  adesivo(1.55,2.75,0,(borda)=>{ roda(ctx,0.62); if(borda){ ctx.fillStyle=CR; ctx.fill(); } else { roda(ctx,0.52); ctx.fillStyle="#F4EEE2"; ctx.fill(); ctx.lineWidth=0.05; ctx.strokeStyle=INK; ctx.stroke(); roda(ctx,0.2); ctx.fillStyle=AM; ctx.fill(); ctx.stroke(); roda(ctx,0.07); ctx.fillStyle=INK; ctx.fill(); } });
+  adesivo(2.25,3.25,-0.45,(borda)=>{ if(borda){ ctx.beginPath(); ctx.ellipse(0,0,0.5,0.32,0,0,Math.PI*2); ctx.fillStyle=CR; ctx.fill(); } else { ctx.beginPath(); ctx.ellipse(0,0,0.42,0.24,0,0,Math.PI*2); ctx.fillStyle=AM; ctx.fill(); ctx.fillStyle=INK; ctx.beginPath(); ctx.arc(-0.13,-0.04,0.045,0,Math.PI*2); ctx.arc(0.13,-0.04,0.045,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(0,0.02,0.13,0.2,Math.PI-0.2); ctx.lineWidth=0.04; ctx.strokeStyle=INK; ctx.stroke(); } });
+}
+// Casual 1: quadras de tênis vistas de cima, lado a lado, com bolinhas espalhadas
+function tileQuadras(ctx){
+  const quadra=(x,y,w,h,cor)=>wrap(ctx,()=>{
+    ctx.fillStyle=cor; ctx.fillRect(x,y,w,h);
+    ctx.strokeStyle="#FFFFFF"; ctx.lineWidth=0.055;
+    const a=h*0.125, sv=w*0.27;
+    ctx.strokeRect(x,y,w,h); ctx.beginPath();
+    ctx.moveTo(x,y+a); ctx.lineTo(x+w,y+a); ctx.moveTo(x,y+h-a); ctx.lineTo(x+w,y+h-a);
+    ctx.moveTo(x+sv,y+a); ctx.lineTo(x+sv,y+h-a); ctx.moveTo(x+w-sv,y+a); ctx.lineTo(x+w-sv,y+h-a);
+    ctx.moveTo(x+sv,y+h/2); ctx.lineTo(x+w-sv,y+h/2); ctx.stroke();
+    ctx.strokeStyle="#F4EEE2"; ctx.lineWidth=0.07; ctx.setLineDash([0.05,0.04]); ctx.beginPath(); ctx.moveTo(x+w/2,y-0.08); ctx.lineTo(x+w/2,y+h+0.08); ctx.stroke(); ctx.setLineDash([]);
+  });
+  ctx.fillStyle="#131C6E"; ctx.fillRect(0,0,T_,T_);
+  quadra(0.2,0.2,3.6,1.6,"#2338C9"); quadra(2.2,2.2,3.6,1.6,"#4A63F2");
+  const bola=(x,y)=>wrap(ctx,()=>{ ctx.beginPath(); ctx.arc(x,y,0.11,0,Math.PI*2); ctx.fillStyle="#C9F24B"; ctx.fill(); ctx.beginPath(); ctx.arc(x-0.11,y,0.08,-1,1); ctx.arc(x+0.11,y,0.08,Math.PI-1,Math.PI+1); ctx.strokeStyle="#FFFFFF"; ctx.lineWidth=0.018; ctx.stroke(); });
+  bola(1.05,1.25); bola(3.15,2.65); bola(2.55,0.55);
+}
+// Casual 2: os furinhos da biqueira em retícula, crescendo em ondas
+function tilePerfuros(ctx){
+  ctx.fillStyle="#2338C9"; ctx.fillRect(0,0,T_,T_);
+  const p=0.25;
+  for(let j=0;j<T_/p;j++) for(let i=0;i<T_/p;i++){
+    const x=(i+(j%2?0.5:0))*p, y=(j+0.5)*p;
+    const o=0.5+0.5*Math.sin(K*x*1+1.6*Math.sin(K*y)+0.6*Math.cos(2*K*y));
+    const rr=0.012+Math.pow(o,1.6)*0.112;
+    wrap(ctx,()=>{ ctx.beginPath(); ctx.arc(x,y,rr,0,Math.PI*2); ctx.fillStyle="#FFFFFF"; ctx.fill(); });
+  }
+}
+const TILES={esportivo:[tileVelocidade,tileTrilha], skate:[tileGrip,tileAdesivos], casual:[tileQuadras,tilePerfuros]};
+function pattern(ctx, w, h, key, v){
+  const t=tileCanvas(key,v);
+  for(let y=0;y<h;y+=TILE) for(let x=0;x<w;x+=TILE) ctx.drawImage(t,x,y,TILE,TILE);
 }
 function canvasCm(wcm, hcm, px, draw){
   const cv=document.createElement("canvas"); cv.width=Math.round(wcm*px); cv.height=Math.round(hcm*px);
@@ -175,7 +282,7 @@ function canvasCm(wcm, hcm, px, draw){
 }
 const tileCache={};
 function tileCanvas(key,v){
-  const id=key+v; if(!tileCache[id]) tileCache[id]=canvasCm(TILE,TILE,64,ctx=>pattern(ctx,TILE,TILE,key,v));
+  const id=key+v; if(!tileCache[id]) tileCache[id]=canvasCm(TILE,TILE,64,ctx=>{ ctx.beginPath(); ctx.rect(0,0,TILE,TILE); ctx.clip(); TILES[key][v](ctx); });
   return tileCache[id];
 }
 function swatch(key,v){ return canvasCm(8,4,40,ctx=>pattern(ctx,8,4,key,v)).toDataURL(); }
@@ -236,7 +343,12 @@ function backCanvas(){
 }
 function nameCanvas(key){
   const c=COLS[key];
-  return canvasCm(L+2*G,2,40,ctx=>{ ctx.fillStyle=c.accInk; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.font=font(0.95); ctx.fillText(c.nome.toUpperCase(),(L+2*G)*0.74,1.05); });
+  // tarja na cor da coleção atrás do nome, para ele aparecer sobre qualquer estampa
+  return canvasCm(L+2*G,2,40,ctx=>{
+    const x=(L+2*G)*0.74, txt=c.nome.toUpperCase(); ctx.font=font(0.95); const tw=ctx.measureText(txt).width;
+    ctx.fillStyle=c.acc; ctx.beginPath(); ctx.roundRect(x-tw/2-0.45,0.35,tw+0.9,1.4,0.12); ctx.fill();
+    ctx.fillStyle=c.accInk; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(txt,x,1.08);
+  });
 }
 
 function shapeOf(pts, sc, bot){
@@ -249,19 +361,32 @@ function polyOf(pts, sc, bot){
 function makeShoe(key){
   const c=COLS[key], sc=0.125, depth=7.2, bev=0.55, g=new THREE.Group();
   const ext=(shape,d,b)=>{ const geo=new THREE.ExtrudeGeometry(shape,{depth:d,bevelEnabled:true,bevelThickness:b,bevelSize:b,bevelSegments:3,curveSegments:16}); geo.translate(0,0,-d/2); return geo; };
-  const up=new THREE.Mesh(ext(shapeOf(c.up,sc,c.bot),depth,bev),M({color:c.upper,roughness:.75}));
-  const so=new THREE.Mesh(ext(polyOf(c.so,sc,c.bot),depth+0.3,0.45),M({color:c.sole,roughness:.6}));
-  const ob=new THREE.Mesh(new THREE.BoxGeometry(24.6,0.45,depth+1.1),M({color:c.outsole,roughness:.8}));
-  ob.position.set(0,0.22,0);
-  [up,so,ob].forEach(m=>{m.castShadow=true; m.receiveShadow=true; g.add(m);});
-  c.dec.forEach(p=>{
-    const geo=new THREE.ShapeGeometry(polyOf(p,sc,c.bot));
-    [1,-1].forEach(sd=>{ const m=new THREE.Mesh(geo,M({color:c.detail,roughness:.6,side:THREE.DoubleSide})); m.position.z=sd*(depth/2+bev+0.03); g.add(m); });
+  const add=(geo,mat)=>{ const m=new THREE.Mesh(geo,mat); m.castShadow=true; m.receiveShadow=true; g.add(m); return m; };
+  // sola em camadas: solado de borracha mais largo, entressola, cabedal e a língua mais estreita por cima
+  // afina a largura (z) em direção ao topo do cabedal, ao bico e ao calcanhar, para não parecer uma placa
+  const upGeo=ext(shapeOf(c.up,sc,c.bot),depth,bev); upGeo.computeBoundingBox(); const bb=upGeo.boundingBox;
+  const k=(x,y)=>{ const t=Math.min(1,Math.max(0,(y-bb.min.y)/(bb.max.y-bb.min.y))), u=(x-bb.min.x)/(bb.max.x-bb.min.x);
+    const fx=u>0.7?1-0.45*((u-0.7)/0.3)**2:(u<0.12?1-0.25*((0.12-u)/0.12)**2:1); return (1-0.55*t*t)*fx; };
+  const taper=geo=>{ const q=geo.attributes.position; for(let i=0;i<q.count;i++) q.setZ(i,q.getZ(i)*k(q.getX(i),q.getY(i))); q.needsUpdate=true; geo.computeVertexNormals(); return geo; };
+  // sola em camadas: solado de borracha mais largo, entressola, cabedal e a língua mais estreita por cima
+  add(taper(ext(polyOf(c.out,sc,c.bot),depth+0.9,0.35)),M({color:c.outsole,roughness:.85}));
+  add(taper(ext((c.soSpline?shapeOf:polyOf)(c.so,sc,c.bot),depth+0.6,0.5)),M({color:c.sole,roughness:.55}));
+  add(taper(upGeo),M({color:c.upper,roughness:.75}));
+  if(c.tongue) add(taper(ext(shapeOf(c.tongue,sc,c.bot),depth*0.55,0.45)),M({color:c.upper,roughness:.85}));
+  // painéis sobrepostos: mesma forma afinada, um pouco mais larga que o cabedal para ficar por cima
+  c.dec.forEach(p=>add(taper(ext(polyOf(p,sc,c.bot),depth+0.12,bev)),M({color:c.detail,roughness:.6})));
+  // cadarço: pares cruzados por cima do peito do pé
+  const lm=M({color:c.lace,roughness:.7});
+  // altura do peito do pé em x: o ponto mais alto do contorno do cabedal nessa posição
+  const topY=x=>{ let best=Infinity; for(let i=0;i<c.up.length;i++){ const [x0,y0]=c.up[i], [x1,y1]=c.up[(i+1)%c.up.length];
+    if((x-x0)*(x-x1)<=0 && x0!==x1){ best=Math.min(best,y0+(y1-y0)*(x-x0)/(x1-x0)); } } return best; };
+  c.laces.forEach(([x])=>{
+    const X=(x-110)*sc, Y=(c.bot-topY(x))*sc+bev*0.7, len=(depth+2*bev)*k(X,Y-bev)*0.72;
+    [0.3,-0.3].forEach(ang=>{
+      const bar=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.22,len,10),lm); bar.rotation.x=Math.PI/2;
+      const cross=new THREE.Group(); cross.add(bar); cross.rotation.y=ang; cross.position.set(X,Y,0); bar.castShadow=true; g.add(cross);
+    });
   });
-  for(let i=0;i<4;i++){
-    const lace=new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.12,depth*0.7,8),M({color:key==="esportivo"?"#EDEDE8":key==="skate"?"#F4EEE2":"#FFFFFF"}));
-    lace.rotation.x=Math.PI/2; lace.position.set((-38+i*9)*sc*0.9+0.2,(c.bot-(c.up[8][1]+8+i*3.3))*sc+0.55,0); g.add(lace);
-  }
   return g;
 }
 
